@@ -1,0 +1,23 @@
+shell脚本用得好，省时省力效率高
+
+将以上脚本放在android编译根目录，设置好环境后:
+
+示例：
+
+. myflash.sh　 aboot boot reboot
+:刷image,将在刷　$OUT下的aboot boot 之后reboot,其它的组合可参看脚本
+
+. ensure_root_rw.sh
+:root,并挂载system 为rw,主要被其它脚本调用
+
+. push.sh Contacts.apk framework.jar
+:将自动 root 机器，挂载system为rw, push $OUT/system/app/ 下的Contacts.odex和Contacts.apk到system/app/下，push framework.odex和framework.jar到/system/framework下
+
+
+. mmm.sh packages/app/Contacts
+:编译packages/app/Contacts,root机器，挂载system为rw,push 对应的odex和apk到机器，这条最常使用
+
+. logp.sh com.android.contacts
+:根据进程名(不一定要写全，可以区分其它进程名即可)过滤log,能够监控pid变化，即使进程死掉了，重新启动，依旧可以抓到log,特别适 用调试MediaProvider等进程频繁死亡启动的应用，不用每次用ps查pid再去过滤
+
+上面是示例用法，其它用法请自行看脚本，自行修改，注意运行命令时以".(空格) "开头

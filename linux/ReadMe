@@ -1,0 +1,10 @@
+vi ~/.profile
+add:
+
+add kits Path
+WORK_KITS=/work/kits
+if [ -d "${WORK_KITS}" ] ; then
+    source ${WORK_KITS}/linux/profile_hook.sh
+fi
+
+source ~/.profile

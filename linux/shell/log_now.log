@@ -1,0 +1,11 @@
+--------- beginning of /dev/log/main
+07-16 14:32:58.290 E/QCALOG  (  386): [MessageQ] ProcessNewMessage: [XT-CS] unknown deliver target [OS-Agent]
+07-16 14:32:58.290 E/QCALOG  (  386): [MessageQ] ProcessNewMessage: [XTWiFi-PE] unknown deliver target [OS-Agent]
+07-16 14:33:02.810 I/LOWI-SERVER(  402): [LOWIController] OSAgent Subscription timer, check and issue subscription request
+07-16 14:33:02.810 E/QCALOG  (  386): [MessageQ] ProcessNewMessage: [LOWI-SERVER] unknown deliver target [OS-Agent]
+07-16 14:33:03.290 E/QCALOG  (  386): [MessageQ] ProcessNewMessage: [XT-CS] unknown deliver target [OS-Agent]
+07-16 14:33:03.290 E/QCALOG  (  386): [MessageQ] ProcessNewMessage: [XTWiFi-PE] unknown deliver target [OS-Agent]
+07-16 14:33:08.290 E/QCALOG  (  386): [MessageQ] ProcessNewMessage: [XT-CS] unknown deliver target [OS-Agent]
+07-16 14:33:08.290 E/QCALOG  (  386): [MessageQ] ProcessNewMessage: [XTWiFi-PE] unknown deliver target [OS-Agent]
+07-16 14:33:13.290 E/QCALOG  (  386): [MessageQ] ProcessNewMessage: [XT-CS] unknown deliver target [OS-Agent]
+07-16 14:33:13.290 E/QCALOG  (  386): [MessageQ] ProcessNewMessage: [XTWiFi-PE] unknown deliver target [OS-Agent]
