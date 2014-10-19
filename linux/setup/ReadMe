@@ -1,5 +1,4 @@
-vi ~/.profile
-add:
+vi ~/.profile(just one user) or sudo vi /etc/profile.d/hook.sh (for all users).
 
 #work kits hook shell
 DAIQ_WORK_HOME=/work
@@ -9,3 +8,9 @@ if [ -d "${DAIQ_WORK_HOME}/kits/linux/setup" ] ; then
 fi
 
 source ~/.profile
+
+
+FOR ALL BASH USER
+sudo cp ./daiq_hook.sh /etc/bash_completion.d/daiq_hook.sh
+sudo reboot
+

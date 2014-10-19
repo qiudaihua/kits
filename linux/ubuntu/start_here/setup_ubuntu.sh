@@ -8,6 +8,7 @@ sudo apt-get upgrade
 
 sudo apt-get install gnome-session-fallback gconf-editor
 sudo apt-get install TypeCatcher
+
 sudo apt-get install adobe-flashplugin*
 sudo apt-get install iptux
 sudo apt-get install jedit p7zip*
@@ -18,6 +19,13 @@ sudo adduser daiq vboxusers
 sudo add-apt-repository ppa:wiznote-team
 sudo apt-get update
 sudo apt-get install wiznote
+
+#12.04
+sudo ls /etc/lightdm/*.conf
+sudo echo "allow-guest=false" >> /etc/lightdm/lightdm.conf
+#14.04
+sudo sh -c 'echo "allow-guest=false" >> /usr/share/lightdm/lightdm.conf.d/50-ubuntu.conf'
+sudo service lightdm restart
 
 nslookup googlesource.com
 nslookup android.googlesource.com
