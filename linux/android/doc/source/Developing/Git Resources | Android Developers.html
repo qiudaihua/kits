@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+
+<link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+<title>Git Resources | Android Developers</title>
+
+<!-- STYLESHEETS -->
+<link rel="stylesheet"
+href="//fonts.googleapis.com/css?family=Roboto:regular,medium,thin,italic,mediumitalic,bold" title="roboto">
+<link href="/assets/css/default.css" rel="stylesheet" type="text/css">
+
+
+
+<!-- JAVASCRIPT -->
+<script src="//www.google.com/jsapi" type="text/javascript"></script>
+<script src="/assets/js/android_3p-bundle.js" type="text/javascript"></script>
+<script type="text/javascript">
+  var toRoot = "/";
+  
+  var devsite = false;
+  
+</script>
+<script src="/assets/js/docs.js" type="text/javascript"></script>
+
+
+<script type="text/javascript">
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-45455297-1']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+</script>
+</head>
+
+<body class="gc-documentation 
+  " itemscope itemtype="http://schema.org/Article">
+<a name="top"></a>
+
+  
+    <!-- Header -->
+    <div id="header">
+        <div class="wrap" id="header-wrap">
+          <div class="col-3 saclogo">
+          <a href="/index.html">
+            <img src="/assets/images/sac_logo.png"
+                srcset="/assets/images/sac_logo@2x.png 2x"
+                width="123" height="25" alt="Android Developers" />
+          </a>
+          </div>
+            <ul class="nav-x col-9">
+                <li class="source">
+                  <a href="/source/index.html" class="selected"
+                  >Source</a></li>
+                <li class="devices"><a href="/devices/index.html" 
+                  >Devices</a></li>
+                <li class="accessories"><a href="/accessories/index.html" 
+                  >Accessories</a></li>
+                <li class="compatibility last"><a href="/compatibility/index.html" 
+                  >Compatibility</a></li>
+            </ul>
+            <!-- New Search -->
+            <div class="menu-container">
+            <div class="moremenu">
+    <div id="more-btn"></div>
+  </div>
+  <div class="morehover" id="moremenu">
+    <div class="top"></div>
+    <div class="mid">
+      <div class="header">Android Sites</div>
+      <ul>
+        <li class="active"><a>Android Open Source Project</a></li>
+        <li><a href="http://www.android.com">Android.com</a></li>
+        <li><a href="http://developer.android.com">Android Developers</a></li>
+      </ul>
+      <!-- <div class="header">Support</div>
+      <ul>
+        <li><a href="/support.html">Developer Support</a></li>
+      </ul> -->
+      <br class="clearfix" />
+    </div>
+    <div class="bottom"></div>
+  </div>
+
+  <div class="search" id="search-container">
+    <div class="search-inner">
+      <div id="search-btn"></div>
+      <div class="left"></div>
+      <form onsubmit="return submit_search()">
+        <input id="search_autocomplete" type="text" value="" autocomplete="off" name="q"
+onfocus="search_focus_changed(this, true)" onblur="search_focus_changed(this, false)"
+onkeydown="return search_changed(event, true, '/')"
+onkeyup="return search_changed(event, false, '/')" />
+      </form>
+      <div class="right"></div>
+        <a class="close hide">close</a>
+        <div class="left"></div>
+        <div class="right"></div>
+    </div>
+  </div>
+  <div id="search_filtered_wrapper">
+    <div id="search_filtered_div" class="no-display">
+        <ul id="search_filtered">
+        </ul>
+    </div>
+  </div>
+
+  </div>
+  <!-- /New Search> -->
+        </div>
+    </div>
+    <!-- /Header -->
+
+  <div id="searchResults" class="wrap" style="display:none;">
+          <h2 id="searchTitle">Results</h2>
+          <div id="leftSearchControl" class="search-control">Loading...</div>
+  </div>
+
+  
+  
+  
+    
+  <div class="wrap clearfix" id="body-content">
+    <div class="col-4" id="side-nav" itemscope itemtype="http://schema.org/SiteNavigationElement">
+      <div id="devdoc-nav" class="scroll-pane">
+<a class="totop" href="#top" data-g-event="left-nav-top">to top</a>
+
+<!--
+    Copyright 2013 The Android Open Source Project
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+        http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+-->
+<ul id="nav">
+  <li class="nav-section">
+    <div class="nav-section-header">
+      <a href="/source/index.html">
+        <span class="en">Overview</span>
+      </a>
+    </div>
+    <ul>
+      <li><a href="/source/code-lines.html">Codelines, Branches, and Releases</a></li>
+      <li><a href="/source/build-numbers.html">Codenames, Tags, and Build Numbers</a></li>
+      <li><a href="/source/roles.html">Project Roles</a></li>
+      <li><a href="/source/brands.html">Brand Guidelines</a></li>
+      <li><a href="/source/licenses.html">Licenses</a></li>
+      <li><a href="/source/faqs.html">FAQ</a></li>
+    </ul>
+  </li>
+
+
+  <li class="nav-section">
+      <div class="nav-section-header">
+        <a href="/source/building.html">
+          <span class="en">Downloading and Building</span>
+        </a>
+      </div>
+       <ul>
+        <li><a href="/source/initializing.html">Initializing the Build Environment</a></li>
+        <li><a href="/source/downloading.html">Downloading the Source</a></li>
+        <li><a href="/source/building-running.html">Building and Running</a></li>
+        <li><a href="/source/building-devices.html">Building for Devices</a></li>
+        <li><a href="/source/building-kernels.html">Building Kernels</a></li>
+        <li><a href="/source/known-issues.html">Known Issues</a></li>
+      </ul>
+  </li>
+  <li class="nav-section">
+          <div class="nav-section-header">
+            <a href="/source/developing.html">
+              <span class="en">Developing</span>
+            </a>
+          </div>
+          <ul>
+            <li><a href="/source/using-repo.html">Using Repo</a></li>
+            <li><a href="/source/using-eclipse.html">Using Eclipse</a></li>
+            <li><a href="/source/git-resources.html">Git Resources</a></li>
+          </ul>
+  </li>
+
+  <li class="nav-section">
+    <div class="nav-section-header">
+      <a href="/source/contributing.html">
+        <span class="en">Contributing</span>
+      </a>
+    </div>
+       <ul>
+        <li><a href="/source/life-of-a-patch.html">Life of a Patch</a>
+        <li><a href="/source/submit-patches.html">Submitting Patches</a></li>
+        <li><a href="http://android-review.googlesource.com">View Patches</a></li>
+        <li><a href="/source/life-of-a-bug.html">Life of a Bug</a></li>
+        <li><a href="/source/report-bugs.html">Reporting Bugs</a></li>
+        <li><a href="/source/code-style.html">Code Style Guidelines</a></li>
+      </ul>
+  </li>
+
+  <li class="nav-section">
+    <div class="nav-section-header empty">
+      <a href="/source/community/index.html">
+        <span class="en">Community</span>
+      </a>
+    </div>
+  </li>
+
+</ul>
+
+
+      </div>
+    </div> <!-- end side-nav -->
+    <script>
+      $(document).ready(function() {
+        scrollIntoView("devdoc-nav");
+        });
+    </script>
+
+  
+
+
+
+
+<div class="col-12" id="doc-col" >
+
+
+  
+    
+      
+        <h1 itemprop="name" >Git Resources</h1>
+      
+    
+  
+
+
+  
+  <div id="jd-content">
+
+
+    <div class="jd-descr" itemprop="articleBody">
+    <!--
+    Copyright 2013 The Android Open Source Project
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+        http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+-->
+<p>For further information on Git, check out these excellent off-site resources:</p>
+<ul>
+<li>
+<p>The <a href="http://book.git-scm.com">Git Community Book</a> (maintained by Scott Chacon) </p>
+</li>
+<li>
+<p><a href="http://git.or.cz/gitwiki/FrontPage">Git Wiki</a></p>
+</li>
+<li>
+<p><a href="http://www.kernel.org/pub/software/scm/git/docs">Git Manual Page</a> </p>
+</li>
+<li>
+<p><a href="http://www.gitcasts.com">GitCasts</a> (Git how-to videos)</p>
+</li>
+</ul>
+
+    </div>
+      
+      <div class="content-footer layout-content-row" 
+                    itemscope itemtype="http://schema.org/SiteNavigationElement">
+        <div class="layout-content-col col-9" style="padding-top:4px">
+          
+            <div class="g-plusone" data-size="medium"></div>
+          
+        </div>
+        
+        <div class="paging-links layout-content-col col-4">
+          
+        </div>
+        
+      </div>
+      
+      
+      
+
+  </div> <!-- end jd-content -->
+
+<div id="footer" class="wrap" >
+  <div id="copyright">
+    
+  Except as noted, this content is 
+  licensed under <a href="http://creativecommons.org/licenses/by/2.5/">
+  Creative Commons Attribution 2.5</a>. For details and 
+  restrictions, see the <a href="/license.html">Content 
+  License</a>.
+  </div>
+    <div id="footerlinks">
+    
+  <p>
+    <a href="/source/index.html">About Android</a>&nbsp;&nbsp;|&nbsp;
+    <a href="/source/community/index.html">Community</a>&nbsp;&nbsp;|&nbsp;
+    <a href="/legal.html">Legal</a>&nbsp;&nbsp;|&nbsp;
+  </p>
+  </div>
+
+</div><!-- end doc-content -->
+
+</div> <!-- end body-content --> 
+
+
+
+
+
+
+</body>
+</html>
+
+
+

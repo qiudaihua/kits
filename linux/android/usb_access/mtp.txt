@@ -1,0 +1,69 @@
+如何在Ubuntu下面通过MTP访问最新的Android设备(Android4.0及以上)， 比如Galaxy Nexus？
+
+
+解决办法如下：
+
+
+    1. 安装必要的MTP工具集：sudo apt-get install mtp-tools mtpfs
+
+
+    2. 打开Galaxy Nexus，选择MTP的存储方式，而不是PTP。
+
+
+    3. 检测你的设备的idVendor和idProduct号。
+        mtp-detect | grep idVendor （获取的号码就是输出的红色字段，idVendor: 04e8）
+        mtp-detect | grep idProduct (获取的号码就是输出的红色字段，idProduct: 685c)
+    
+    4. 编辑设备文件，没有就添加。
+    gksu gedit /etc/udev/rules.d/51-android.rules
+
+
+    在其中加入：
+
+
+    SUBSYSTEM=="usb", ATTR{idVendor}=="VENDORID", ATTR{idProduct}=="PRODUCTID", MODE="0666″
+
+
+    其中，VENDORID替换位你签名的idVendor的值，即04e8，后面的PRODUCTID同理。
+    注意，引号一定注意全角和半角，不放心手动输入一遍。
+    
+    5. 启动相关服务和规则，设置挂载点，并赋予读写可执行权限。
+        sudo service udev restart
+        sudo mkdir /media/mtp
+        sudo chmod a+rwx /media/mtp
+        sudo adduser YOURUSERNAME fuse （将你的用户名替换这里的YOURUSERNAME）
+
+
+        gksu gedit /etc/fuse.conf:
+        将最后一行签名的#去掉，即将原来的“#user_allow_other”变为“user_allow_other”。
+    
+    6. 然后，利用别名机制，实现挂载和弹出。
+    echo "alias android-mtp-connect=\"mtpfs -o allow_other /media/mtp\"" >> ~/.bashrc
+    echo "alias android-mtp-disconnect=\"fusermount -u /media/mtp\"" >> ~/.bashrc
+    source ~/.bashrc
+
+
+    (再次注意签名的全角和半角符号，手动输入一遍避免出错)
+    
+    7. 然后，此时运行android-mtp-connect可能还不能识别设备. 注销之后登录进去，再次运行android-mtp-connect，即可成功。
+        不过，挂载的过程有点慢，需要等上1分钟左右，开始可能误以为没有挂载，不过后来会弹出相应的文件,
+        并可以完整的看到文件，拷贝，编辑。
+    
+    
+    至此，整个过程成功，经过测试完全可用。
+    
+    8. 附记：如果严格按照上面的步骤，并且注意了全角和半角符号，仍然出现了问题，可以检测是否是libmtp这个库运行不正常，可能在最新的Ubuntu下面，较久版本的不能正常运行，此时，可以按照下面的步骤来更新到最新的libmtp库，然后即可成功。经过测试，也没问题（此步骤可以在前面所有步骤之前进行）
+    sudo apt-get install libusb-dev
+    wget http://downloads.sourceforge.net/project/libmtp/libmtp/1.1.1/libmtp-1.1.1.tar.gz
+    tar -xvf libmtp-1.1.1.tar.gz
+    cd libmtp-1.1.1
+    ./configure --prefix=/usr
+    make
+
+
+    sudo make install
+    sudo cp 69-libmtp.rules /etc/udev/rules.d (mayby not needed)
+    sudo service udev restart
+
+
+    9. 经过上面这8个步骤之后，就可以使用mtp设备了，因为已经可以使用mtp-dectect，mtp-files等命令来查看设备以及相关的文件了，还可以操作其中的文件， 如果您还不能成功，则可能是你的ubuntu版本太旧了，我试过ubuntu10.04的不行， 听说必须11.04以上的才行，我测试过12.04，完全可行，但是11.04没有测试。  最后祝您成功! 
