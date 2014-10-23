@@ -1,0 +1,9 @@
+server:
+
+ssh -R 123456:localhost:22 daiq@113.116.62.2 -p 22688
+
+client:
+
+ssh daiq@localhost -p 123456
+
+

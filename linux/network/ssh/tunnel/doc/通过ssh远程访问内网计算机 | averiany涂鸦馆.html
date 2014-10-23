@@ -1,0 +1,723 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" dir="ltr" lang="zh-CN">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<title>通过ssh远程访问内网计算机 | averiany涂鸦馆</title> 
+<meta name="description" content="背景:我在内网搭建了linux系统A,想在另外一台外网计算机B上对其进行控制,已知A是内网计算机,无公网IP,B有固定公网IP或者NAT转发也行,在这种情况下,可以通过强大的ssh服务来实现要求." />
+<meta name="keywords" content="ssh,技巧" />
+<link rel="stylesheet" href="http://www.averainy.info/wp-content/themes/HotNewspro/style.css" type="text/css" media="screen" />
+<link rel="author" href="https://plus.google.com/115198117077455233129/posts"/>
+<link rel="stylesheet" href="http://www.averainy.info/wp-content/themes/HotNewspro/css/css.css" />
+<link rel="stylesheet" href="http://www.averainy.info/wp-content/themes/HotNewspro/css/highlight.css" />
+<link rel="stylesheet" href="http://www.averainy.info/wp-content/themes/HotNewspro/css/img.css" />
+<link rel="alternate" type="application/rss+xml" title="averiany涂鸦馆 RSS Feed" href="http://www.averainy.info/feed/" />
+<link rel="alternate" type="application/atom+xml" title="averiany涂鸦馆 Atom Feed" href="http://www.averainy.info/feed/atom/" />
+<link rel="pingback" href="http://www.averainy.info/xmlrpc.php" />
+<link rel="shortcut icon" href="http://www.averainy.info/wp-content/themes/HotNewspro/images/favicon.ico" />
+<script type="text/javascript" src="http://www.averainy.info/wp-content/themes/HotNewspro/js/jquery.min.js" ></script>
+<link rel='stylesheet' id='codecolorer-css'  href='http://www.averainy.info/wp-content/plugins/codecolorer/codecolorer.css?ver=0.9.9' type='text/css' media='screen' />
+<script type="text/javascript">
+var duoshuoQuery = {"short_name":"averainy","sso":{"login":"http:\/\/www.averainy.info\/wp-login.php?action=duoshuo_login","logout":"http:\/\/www.averainy.info\/wp-login.php?action=logout&_wpnonce=8c0778eb7b"}};
+duoshuoQuery.sso.login += '&redirect_to=' + encodeURIComponent(window.location.href);
+duoshuoQuery.sso.logout += '&redirect_to=' + encodeURIComponent(window.location.href);
+</script>
+<script type="text/javascript" src="http://static.duoshuo.com/embed.js" charset="UTF-8" async="async"></script>
+<script type='text/javascript' src='http://www.averainy.info/wp-includes/js/l10n.js?ver=20101110'></script>
+<link rel="EditURI" type="application/rsd+xml" title="RSD" href="http://www.averainy.info/xmlrpc.php?rsd" />
+<link rel="wlwmanifest" type="application/wlwmanifest+xml" href="http://www.averainy.info/wp-includes/wlwmanifest.xml" /> 
+<link rel='index' title='averiany涂鸦馆' href='http://www.averainy.info/' />
+<link rel='start' title='最近折腾linux桌面的感受' href='http://www.averainy.info/e6_9c_80_e8_bf_91_e6_8a_98_e8_85_belinux_e6_a1_8c_e9_9d_a2_e7_9a_84_e6_84_9f_e5_8f_97/' />
+<link rel='prev' title='记录20120312' href='http://www.averainy.info/e8_ae_b0_e5_bd_9520120312/' />
+<link rel='next' title='apache+svn添加新用户的方法' href='http://www.averainy.info/apachesvn_e6_b7_bb_e5_8a_a0_e6_96_b0_e7_94_a8_e6_88_b7_e7_9a_84_e6_96_b9_e6_b3_95/' />
+<meta name="generator" content="WordPress 3.2.1" />
+<link rel='canonical' href='http://www.averainy.info/e9_80_9a_e8_bf_87ssh_e8_bf_9c_e7_a8_8b_e8_ae_bf_e9_97_ae_e5_86_85_e7_bd_91_e8_ae_a1_e7_ae_97_e6_9c/' />
+<link rel='shortlink' href='http://www.averainy.info/?p=104' />
+<meta name='wumiiVerification' content='4f49a3a2-6b31-4fac-96df-c09b72cd6d4a' />
+		<link href="http://www.averainy.info/wp-content/themes/HotNewspro/styles/6-purple.css" rel="stylesheet" type="text/css" />
+
+<style type="text/css">
+.banner img{
+	margin: 0 0 5px 0;
+}
+</style>
+
+<script type="text/javascript" src="http://www.averainy.info/wp-content/themes/HotNewspro/comments-ajax.js"></script>
+<script type="text/javascript" src="http://www.averainy.info/wp-content/themes/HotNewspro/js/reply.js"></script>
+<script type="text/javascript" src="http://www.averainy.info/wp-content/themes/HotNewspro/js/jquery.min.js" ></script>
+<script type="text/javascript" src="http://www.averainy.info/wp-content/themes/HotNewspro/js/custom.js"></script>
+<script type="text/javascript" src="http://www.averainy.info/wp-content/themes/HotNewspro/js/superfish.js"></script>
+<script type="text/javascript" src="http://www.averainy.info/wp-content/themes/HotNewspro/js/muscript.js"></script>
+<script type="text/javascript" src="http://www.averainy.info/wp-content/themes/HotNewspro/js/jquery.colorbox.js"></script>
+<script type="text/javascript">
+	$(document).ready(function(){
+		//Examples of how to assign the ColorBox event to elements
+		$("a[rel='example1']").colorbox();
+		$("a[rel='example2']").colorbox({slideshow:true});
+		$("a[rel='example3']").colorbox({transition:"none", width:"75%", height:"75%"});
+		$("a[rel='example4']").colorbox({transition:"fade"});
+		$(".example5").colorbox();
+		$(".example6").colorbox({iframe:true, innerWidth:480, innerHeight:400});
+		$(".example7").colorbox({width:"80%", height:"80%", iframe:true});
+		$(".example8").colorbox({width:"50%", inline:true, href:"#inline_example1"});
+		$(".example9").colorbox({
+			onOpen:function(){ alert('onOpen: colorbox is about to open'); },
+			onLoad:function(){ alert('onLoad: colorbox has started to load the targeted content'); },
+			onComplete:function(){ alert('onComplete: colorbox has displayed the loaded content'); },
+			onCleanup:function(){ alert('onCleanup: colorbox has begun the close process'); },
+			onClosed:function(){ alert('onClosed: colorbox has completely closed'); }
+		});
+		
+		//Example of preserving a JavaScript event for inline calls.
+		$("#click").click(function(){ 
+			$('#click').css({"background-color":"#f00", "color":"#fff", "cursor":"inherit"}).text("Open this window again and this message will still be here.");
+			return false;
+		});
+	});
+</script><script type="text/javascript">
+$(function () {
+$('.thumbnail img,.thumbnail_t img,.box_comment img,#slideshow img,.cat_ico,.cat_name,.r_comments img').hover(
+function() {$(this).fadeTo("fast", 0.5);},
+function() {$(this).fadeTo("fast", 1);
+});
+});
+</script>
+<!-- PNG -->
+<!--[if lt IE 7]>
+<script type="text/javascript" src="http://www.averainy.info/wp-content/themes/HotNewspro/js/pngfix.js"></script>
+<script type="text/javascript">
+DD_belatedPNG.fix('.boxCaption,.top_box,.logo,.reply,.imgcat');
+</script>
+<![endif]-->
+<!-- 图片延迟加载 -->
+<script type="text/javascript" src="http://www.averainy.info/wp-content/themes/HotNewspro/js/lazyload.js"></script>
+<script type="text/javascript">
+	$(function() {          
+    	$(".entry_box img,.entry_box_h img,#entry img,.entry_b img").lazyload({
+            effect:"fadeIn",
+			failurelimit : 30
+          });
+    	});
+</script><!-- IE6菜单 -->
+<script type="text/javascript"><!--//--><![CDATA[//><!--
+sfHover = function() {
+	if (!document.getElementsByTagName) return false;
+	var sfEls = document.getElementById("menu").getElementsByTagName("li");
+
+	for (var i=0; i<sfEls.length; i++) {
+		sfEls[i].onmouseover=function() {
+			this.className+=" sfhover";
+		}
+		sfEls[i].onmouseout=function() {
+			this.className=this.className.replace(new RegExp(" sfhover\\b"), "");
+		}
+	}	
+	var sfEls = document.getElementById("topnav").getElementsByTagName("li");
+	for (var i=0; i<sfEls.length; i++) {
+		sfEls[i].onmouseover=function() {
+			this.className+=" sfhover";
+		}
+	}
+}
+if (window.attachEvent) window.attachEvent("onload", sfHover);
+//--><!]]></script>
+</head>
+<body>
+<div id="wrapper">
+	<div id="top">
+		<div id='topnav'>
+			<div class="left_top ">
+				<div class="home"><a href="http://www.averainy.info" title="首  页" class="home"></a></div>
+				<div class="menu-menu-bar-container"><ul id="menu-menu-bar" class="menu"><li id="menu-item-7" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-7"><a href="http://www.averainy.info/category/c-program/">c program</a></li>
+<li id="menu-item-8" class="menu-item menu-item-type-taxonomy menu-item-object-category current-post-ancestor current-menu-parent current-post-parent menu-item-8"><a href="http://www.averainy.info/category/linux/">linux</a></li>
+<li id="menu-item-143" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-143"><a href="http://www.averainy.info/category/python/">python</a></li>
+<li id="menu-item-140" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-140"><a href="http://www.averainy.info/category/share/">分享</a></li>
+<li id="menu-item-11" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-11"><a href="http://www.averainy.info/links/">友情链接</a></li>
+<li id="menu-item-424" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-424"><a href="http://www.averainy.info/zuixin-youhuiquan/">最新优惠券</a></li>
+</ul></div> 
+			</div>
+			<!-- end: left_top --> 
+			<div id="searchbar">
+				<form method="get" id="searchform" action="http://www.averainy.info/">
+	<input type="text" value="搜索" onclick="this.value='';" name="s" id="s" class="swap_value" />
+	<input type="image" src="http://www.averainy.info/wp-content/themes/HotNewspro/images/go.gif" id="go" alt="Search" title="搜索" />
+</form>			</div>
+			<!-- end: searchbar -->
+		</div>
+		<!-- end: topnav -->
+	</div>
+	<!-- end: top -->
+	<div id="header">
+		<div class="header_c">
+						<h1><a href="http://www.averainy.info/">averiany涂鸦馆&trade;</a><br/><span  class="blog-title">分享一些linux，c的实用技巧</span ></h1>
+									<div class="login_t"><a id="showbtn"  onclick="showid('smallLay');">登录</a>  <div id="smallLay">
+	<div id="smallLay_box">
+	<!-- if not logged -->
+	<form action="http://www.averainy.info/wp-login.php?redirect_to=http%3A%2F%2Fwww.averainy.info%2Fe9_80_9a_e8_bf_87ssh_e8_bf_9c_e7_a8_8b_e8_ae_bf_e9_97_ae_e5_86_85_e7_bd_91_e8_ae_a1_e7_ae_97_e6_9c%2F" method="post" id="loginform">
+		<div class="loginblock">
+			<p class="login"><input type="text" name="log" id="log" size="" tabindex="11" /></p>
+			<p class="password"><input type="password" name="pwd" id="pwd"  size="" tabindex="12" /></p>
+			<p class="lefted"><button value="Submit" id="submit_t" type="submit" tabindex="13">登录</button></p>
+		</div>
+		<input type="hidden" name="redirect_to" value="/e9_80_9a_e8_bf_87ssh_e8_bf_9c_e7_a8_8b_e8_ae_bf_e9_97_ae_e5_86_85_e7_bd_91_e8_ae_a1_e7_ae_97_e6_9c/" />
+		<input type="checkbox" name="rememberme" id="modlogn_remember" value="yes"  checked="checked" alt="Remember Me" />下次自动登录
+	</form>
+	<!-- end if not logged -->
+	</div>
+</div>
+</div>
+			<div class="time">
+<script type="text/javascript">
+today=new Date();
+var day; var date; var hello;
+hour=new Date().getHours()
+if(hour < 6)hello='  凌晨好! '
+else if(hour < 9)hello=' 早上好! '
+else if(hour < 12)hello=' 上午好! '
+else if(hour < 14)hello=' 中午好! '
+else if(hour < 17)hello=' 下午好! '
+else if(hour < 19)hello=' 傍晚好! '
+else if(hour < 22)hello=' 晚上好! '
+else {hello='夜深了! '}
+var webUrl = webUrl;
+document.write(' '+hello);
+</script>
+<span id=localtime>
+
+<script type="text/javascript">
+　today=new Date(); var tdate,tday, x,year; var x = new Array("星期日", "星期一", "星期二", "星期三", "星期四", "星期五","星期六");
+　　var MSIE=navigator.userAgent.indexOf("MSIE");
+　　if(MSIE != -1)
+　　 year =(today.getFullYear());
+　　else
+　　 year = (today.getYear()+1900);
+　　tdate= year+ "年" + (today.getMonth() + 1 ) + "月" + today.getDate() + "日" + " " + x[today.getDay()];
+　　document.write(tdate); 
+//-->
+</script>
+</span> 
+</div>
+		</div>
+		<div class="clear"></div>
+		<!-- end: header_c -->
+	</div>
+	<!-- end: header -->
+	<div id="featured">
+		<div class="item">
+		<div class="top_t">
+					</div>
+		<!-- 截图 -->
+		<div class="thumbnail_hot">
+							<a href="http://www.averainy.info/%e8%a7%a3%e5%86%b3lighttpd%e5%90%af%e5%8a%a8%e6%97%b6%e6%8a%a5server-c-722-couldnt-set-max-filedescriptors-permission-denied%e9%94%99%e8%af%af/" rel="bookmark" title="解决lighttpd启动时报(server.c.722) couldn&#8217;t set &#8216;max filedescriptors&#8217; Permission denied错误"><img class="home-thumb" src="http://www.averainy.info/wp-content/themes/HotNewspro/images/random/6.jpg" width="236px" height="155px" alt="解决lighttpd启动时报(server.c.722) couldn&#8217;t set &#8216;max filedescriptors&#8217; Permission denied错误"/></a>
+							</div>
+		<div class="top_box"><a href="http://www.averainy.info/%e8%a7%a3%e5%86%b3lighttpd%e5%90%af%e5%8a%a8%e6%97%b6%e6%8a%a5server-c-722-couldnt-set-max-filedescriptors-permission-denied%e9%94%99%e8%af%af/" rel="bookmark" title="解决lighttpd启动时报(server.c.722) couldn&#8217;t set &#8216;max filedescriptors&#8217; Permission denied错误">详细内容</a></div>
+		<div class="boxCaption">
+			<h2><a href="http://www.averainy.info/%e8%a7%a3%e5%86%b3lighttpd%e5%90%af%e5%8a%a8%e6%97%b6%e6%8a%a5server-c-722-couldnt-set-max-filedescriptors-permission-denied%e9%94%99%e8%af%af/" title="Permalink to 解决lighttpd启动时报(server.c.722) couldn&#8217;t set &#8216;max filedescriptors&#8217; Permission denied错误">解决lighttpd启动时报(server.c.</a></h2>
+		</div>
+	</div>
+	<div class="item">
+		<div class="top_t">
+					</div>
+		<!-- 截图 -->
+		<div class="thumbnail_hot">
+							<a href="http://www.averainy.info/linux-network-is-unreachable-%e6%95%85%e9%9a%9c%e8%a7%a3%e5%86%b3%e5%8a%9e%e6%b3%95/" rel="bookmark" title="linux network is unreachable 故障解决办法"><img class="home-thumb" src="http://www.averainy.info/wp-content/themes/HotNewspro/images/random/11.jpg" width="236px" height="155px" alt="linux network is unreachable 故障解决办法"/></a>
+							</div>
+		<div class="top_box"><a href="http://www.averainy.info/linux-network-is-unreachable-%e6%95%85%e9%9a%9c%e8%a7%a3%e5%86%b3%e5%8a%9e%e6%b3%95/" rel="bookmark" title="linux network is unreachable 故障解决办法">详细内容</a></div>
+		<div class="boxCaption">
+			<h2><a href="http://www.averainy.info/linux-network-is-unreachable-%e6%95%85%e9%9a%9c%e8%a7%a3%e5%86%b3%e5%8a%9e%e6%b3%95/" title="Permalink to linux network is unreachable 故障解决办法">linux network is unreachable 故</a></h2>
+		</div>
+	</div>
+	<div class="item">
+		<div class="top_t">
+					</div>
+		<!-- 截图 -->
+		<div class="thumbnail_hot">
+							<a href="http://www.averainy.info/xcode%e8%b0%83%e8%af%95%e8%a7%82%e6%84%9f/" rel="bookmark" title="xcode调试观感"><img class="home-thumb" src="http://www.averainy.info/wp-content/themes/HotNewspro/images/random/18.jpg" width="236px" height="155px" alt="xcode调试观感"/></a>
+							</div>
+		<div class="top_box"><a href="http://www.averainy.info/xcode%e8%b0%83%e8%af%95%e8%a7%82%e6%84%9f/" rel="bookmark" title="xcode调试观感">详细内容</a></div>
+		<div class="boxCaption">
+			<h2><a href="http://www.averainy.info/xcode%e8%b0%83%e8%af%95%e8%a7%82%e6%84%9f/" title="Permalink to xcode调试观感">xcode调试观感</a></h2>
+		</div>
+	</div>
+	<div class="item">
+		<div class="top_t">
+					</div>
+		<!-- 截图 -->
+		<div class="thumbnail_hot">
+							<a href="http://www.averainy.info/%e4%bd%a0%e7%9c%9f%e7%9a%84%e8%ae%a4%e4%b8%baiphone%e5%8f%aa%e6%98%af%e4%b8%80%e9%83%a8%e6%89%8b%e6%9c%ba%e4%b9%88%ef%bc%9fzt%e4%b8%8b/" rel="bookmark" title="你真的认为iphone只是一部手机么？ZT(下)"><img class="home-thumb" src="http://www.averainy.info/wp-content/themes/HotNewspro/images/random/17.jpg" width="236px" height="155px" alt="你真的认为iphone只是一部手机么？ZT(下)"/></a>
+							</div>
+		<div class="top_box"><a href="http://www.averainy.info/%e4%bd%a0%e7%9c%9f%e7%9a%84%e8%ae%a4%e4%b8%baiphone%e5%8f%aa%e6%98%af%e4%b8%80%e9%83%a8%e6%89%8b%e6%9c%ba%e4%b9%88%ef%bc%9fzt%e4%b8%8b/" rel="bookmark" title="你真的认为iphone只是一部手机么？ZT(下)">详细内容</a></div>
+		<div class="boxCaption">
+			<h2><a href="http://www.averainy.info/%e4%bd%a0%e7%9c%9f%e7%9a%84%e8%ae%a4%e4%b8%baiphone%e5%8f%aa%e6%98%af%e4%b8%80%e9%83%a8%e6%89%8b%e6%9c%ba%e4%b9%88%ef%bc%9fzt%e4%b8%8b/" title="Permalink to 你真的认为iphone只是一部手机么？ZT(下)">你真的认为iphone只是一部手机么</a></h2>
+		</div>
+	</div>
+<div class="clear"></div>
+</div>	<!-- scroll -->
+	<div id="scroll">
+		<a class="scroll_t" title="返回顶部"></a>
+		<a class="scroll_c" title="查看留言"></a>		<a class="scroll_b" title="转到底部"></a>
+	</div>
+<script type="text/javascript">
+    function doZoom(size) {
+        var zoom = document.all ? document.all['entry'] : document.getElementById('entry');
+        zoom.style.fontSize = size + 'px';
+    }
+</script>
+
+<div id="content">
+			 <!-- menu -->
+		<div id="map">
+			<div class="browse">现在的位置: <a title="返回首页" href="http://www.averainy.info/">首页</a> ＞<a href="http://www.averainy.info/category/linux/" title="查看 linux 中的全部文章" rel="category tag">linux</a>＞正文<!-- 通过ssh远程访问内网计算机 --></div>
+			<div id="feed"><a href="http://www.averainy.info/feed" title="RSS">RSS</a></div>
+			<div class="font"><a href="javascript:doZoom(12)">小</a> <a href="javascript:doZoom(13)">中</a> <a href="javascript:doZoom(18)">大</a></div>
+		</div>
+		<!-- end: menu -->
+		<div class="entry_box_s">
+			<div class="context">
+				<div class="context_t">
+					<a href="http://www.averainy.info/e5_9c_a8virtualbox_e4_b8_8a_e7_9a_84centos_e7_b3_bb_e7_bb_9f_e4_b8_ad_e4_bf_ae_e6_94_b9sshd_e7_ab_a/" rel="prev">上篇</a>					<a href="http://www.averainy.info/apachesvn_e6_b7_bb_e5_8a_a0_e6_96_b0_e7_94_a8_e6_88_b7_e7_9a_84_e6_96_b9_e6_b3_95/" rel="next">下篇</a>				</div>
+			</div>
+			<div class="entry_title_box">
+				<!-- 分类图标 -->
+				<div class="ico">	<div class="cat_ico">
+        <a href="http://www.averainy.info/category/linux" title="linux">
+        <img src="http://www.averainy.info/wp-content/themes/HotNewspro/images/caticon/linux.gif" />
+        </a>
+	</div>
+</div>
+				<!-- end: 分类图标 -->
+				<div class="entry_title">通过ssh远程访问内网计算机</div>
+				<div class="archive_info">
+					<span class="date">2012年03月13日</span>
+					<span class="category"> &#8260; <a href="http://www.averainy.info/category/linux/" title="查看 linux 中的全部文章" rel="category tag">linux</a></span>
+										<span class="comment"> &#8260; <span>评论关闭</span></span>
+										<span class="edit"></span>
+				</div>
+			</div>
+			<!-- end: entry_title_box -->
+			<div class="entry">
+				<div id="entry">
+<!--div style="float:right;width:310px;height:260px;" -->
+<div align="center" style="width:620px;">
+<!-- 广告位：averainy涂鸦馆 -->
+<script src="http://www.averainy.info/ads/single_top.js"></script>
+</div>
+					<p>背景:我在内网搭建了linux系统A,想在另外一台外网计算机B上对其进行控制,已知A是内网计算机,无公网IP,B有固定公网IP或者NAT转发也行,在这种情况下,可以通过强大的<a href="http://www.averainy.info/tag/ssh/" title="查看 ssh 中的全部文章" target="_blank">ssh</a>服务来实现要求.<br />
+首先现在系统A上执行下面的指令<br />
+ssh -R 1234:localhost:22 -l root xxx.xxx.xxx.xxx</p>
+<p>解释下:<br />
+这条指令是监听B系统的端口1234,使其所有数据转发到A系统的22端口上,xxx.xxx.xxx.xxx是B系统的公网IP,root为B系统的用户,也可以为其他的用户,不一定是root.<br />
+执行完之后就可以在B系统上通过<br />
+ssh -p 1234 username@localhost<br />
+来访问A系统了<br />
+username是B系统的用户.</p>
+<p>这个只是一个示例,举一反三,只要A系统上开的服务都可以通过这个方法来访问,比如web,ftp,等等.<br />
+好处:<br />
+1,以前我都是通过vpn来连接内网计算机的,但是用了这个方法之后速度明显感觉快多了,这样两台计算机的数据传输不需要经过第三方转发,所以速度快多了.<br />
+2,安全,所有数据都是经过加密传输,不会被有心人检测到你的私人信息,比如用户名,密码之类. </p>
+<div class="wumii-hook">
+<input type="hidden" name="wurl" value="http://www.averainy.info/e9_80_9a_e8_bf_87ssh_e8_bf_9c_e7_a8_8b_e8_ae_bf_e9_97_ae_e5_86_85_e7_bd_91_e8_ae_a1_e7_ae_97_e6_9c/" />
+<input type="hidden" name="wtitle" value="通过ssh远程访问内网计算机" />
+<input type="hidden" name="wpic" value="" />
+</div>
+<!-- UJian Button BEGIN -->
+<div class="ujian-hook"></div>
+<script type="text/javascript" src="http://v1.ujian.cc/code/ujian.js?uid=1746051"></script>
+<a href="http://www.ujian.cc" style="border:0;"><img src="http://img.ujian.cc/pixel.png" alt="友荐云推荐" style="border:0;padding:0;margin:0;" /></a>
+<!-- UJian Button END -->
+										<div class="clear"></div>
+				</div>
+																<div class="clear"></div>
+			</div>
+<div id="wumiiDisplayDiv"></div>
+			<div class="back_b">
+				<a href="javascript:void(0);" onclick="history.back();">返回</a>
+			</div>
+			<div class="clear"></div>
+			<!-- end: entry -->
+			<i class="lt"></i>
+			<i class="rt"></i>
+		</div>
+		<div class="entry_sb">
+			<i class="lb"></i>
+			<i class="rb"></i>
+		</div>
+		<!-- entrymeta -->
+		<div class="entrymeta">
+			<div class="authorbio">
+				<div class="author_pic">
+					<img alt='' src='http://1.gravatar.com/avatar/71402087bfff7ff6f7e34609e247f9b7?s=48&amp;d=http%3A%2F%2F1.gravatar.com%2Favatar%2Fad516503a11cd5ca435acc9bb6523536%3Fs%3D48&amp;r=G' class='avatar avatar-48 photo' height='48' width='48' />				</div>
+				<div class="clear"></div>
+				<div class="author_text">
+					<h4>作者: <span><a href="http://www.averainy.info/author/aver/" title="由 averainy 发布" rel="author">averainy</a></span></h4>
+									</div>
+			</div>
+			<span class="spostinfo">
+				该日志由 averainy 于953 天前发表在<a href="http://www.averainy.info/category/linux/" title="查看 linux 中的全部文章" rel="category tag">linux</a>分类下，
+				<br/>
+				转载请注明: <a href="http://www.averainy.info/e9_80_9a_e8_bf_87ssh_e8_bf_9c_e7_a8_8b_e8_ae_bf_e9_97_ae_e5_86_85_e7_bd_91_e8_ae_a1_e7_ae_97_e6_9c/" rel="bookmark" title="本文固定链接 http://www.averainy.info/e9_80_9a_e8_bf_87ssh_e8_bf_9c_e7_a8_8b_e8_ae_bf_e9_97_ae_e5_86_85_e7_bd_91_e8_ae_a1_e7_ae_97_e6_9c/">通过ssh远程访问内网计算机 | averiany涂鸦馆</a><a href="#" onclick="copy_code('http://www.averainy.info/e9_80_9a_e8_bf_87ssh_e8_bf_9c_e7_a8_8b_e8_ae_bf_e9_97_ae_e5_86_85_e7_bd_91_e8_ae_a1_e7_ae_97_e6_9c/'); return false;"> +复制链接</a></span><br/>
+				<span class="content_tag">关键字: <a href="http://www.averainy.info/tag/ssh/" rel="tag">ssh</a>, <a href="http://www.averainy.info/tag/%e6%8a%80%e5%b7%a7/" rel="tag">技巧</a></span>
+			</span>
+			<i class="lt"></i>
+			<i class="rt"></i>
+			<div class="clear"></div>
+		</div>
+		<div class="entry_sb">
+			<i class="lb"></i>
+			<i class="rb"></i>
+		</div>
+		<!-- end: entrymeta -->
+	<div class="context_b">
+		【上篇】<a href="http://www.averainy.info/e8_ae_b0_e5_bd_9520120312/" rel="prev">记录20120312</a><br/>【下篇】<a href="http://www.averainy.info/apachesvn_e6_b7_bb_e5_8a_a0_e6_96_b0_e7_94_a8_e6_88_b7_e7_9a_84_e6_96_b9_e6_b3_95/" rel="next">apache+svn添加新用户的方法</a>		<i class="lt"></i>
+		<i class="rt"></i>
+		<i class="lb"></i>
+		<i class="rb"></i>
+	</div>
+	<!-- relatedposts -->
+	<div class="entry_b">
+	<div class="relatedposts">
+<h4>您可能还会对这些文章感兴趣！</h4>
+<ol>
+		<li><a href="http://www.averainy.info/sshfilesytem%e7%9b%b8%e5%85%b3/">ssh,filesytem相关</a></li>
+		<li><a href="http://www.averainy.info/ssh%e8%bd%acsocks5/">ssh转socks5</a></li>
+		<li><a href="http://www.averainy.info/solve-ssh-connection-ubuntu12-10-the-authentication-speed-slow/">解决ssh连接ubuntu12.10认证速度慢</a></li>
+		<li><a href="http://www.averainy.info/auto-start-chrome-in-full-screen-mode-f11-everytime/">自动打开google chrome的全屏全屏模式</a></li>
+		<li><a href="http://www.averainy.info/linux-cp-jindutiao/">让cp命令显示进度条</a></li>
+		<li><a href="http://www.averainy.info/%e8%a7%a3%e5%86%b3lighttpd%e5%90%af%e5%8a%a8%e6%97%b6%e6%8a%a5server-c-722-couldnt-set-max-filedescriptors-permission-denied%e9%94%99%e8%af%af/">解决lighttpd启动时报(server.c.722) couldn't set 'max f</a></li>
+		<li><a href="http://www.averainy.info/%e3%80%90shell%e7%9b%b8%e5%85%b3%e3%80%91%e6%89%b9%e9%87%8f%e8%bd%ac%e6%8d%a2%e6%96%87%e4%bb%b6%e7%bc%96%e7%a0%81/">【shell相关】批量转换文件编码</a></li>
+		<li><a href="http://www.averainy.info/mysql%e6%96%b0%e5%bb%ba%e7%94%a8%e6%88%b7%e6%8e%88%e6%9d%83%e5%88%a0%e9%99%a4%e7%94%a8%e6%88%b7%e4%bf%ae%e6%94%b9%e5%af%86%e7%a0%81/">MySQL新建用户,授权,删除用户,修改密码</a></li>
+	</ol>
+</div>	<div class="related_img">
+		<div class="related_img_box">
+		<div class="thumbnail_t">
+	</div>
+<!-- 截图 -->
+<div class="thumbnail">
+<a href="http://www.averainy.info/wifi-gongxiangjingling/" rel="bookmark" title="wifi共享精灵：一键分享你的网络">
+<img class="home-thumb" src="http://pic.dbank.com/p07b1dak5a.jpg" width="140px" height="100px" alt="wifi共享精灵：一键分享你的网络"/>
+</a>
+</div>
+	</div>
+		<div class="related_img_box">
+		<div class="thumbnail_t">
+	</div>
+<!-- 截图 -->
+<div class="thumbnail">
+<a href="http://www.averainy.info/chuangye-cmnet/" rel="bookmark" title="来信， 创业 和 移动互联网">
+<img class="home-thumb" src="http://www.averainy.info/wp-content/themes/HotNewspro/images/random/6.jpg" width="140px" height="100px" alt="来信， 创业 和 移动互联网"/>
+</a>
+</div>
+	</div>
+		<div class="related_img_box">
+		<div class="thumbnail_t">
+	</div>
+<!-- 截图 -->
+<div class="thumbnail">
+<a href="http://www.averainy.info/%e5%81%9a%e6%88%96%e8%80%85%e4%b8%8d%e5%81%9a%e8%bf%99%e4%b8%8d%e6%98%af%e9%97%ae%e9%a2%98/" rel="bookmark" title="做或者不做这不是问题">
+<img class="home-thumb" src="http://www.averainy.info/wp-content/themes/HotNewspro/images/random/15.jpg" width="140px" height="100px" alt="做或者不做这不是问题"/>
+</a>
+</div>
+	</div>
+		<div class="related_img_box">
+		<div class="thumbnail_t">
+	</div>
+<!-- 截图 -->
+<div class="thumbnail">
+<a href="http://www.averainy.info/delete-unity-and-installing-gnome-on-ubuntu-12-04-precise-pangolin/" rel="bookmark" title="ubuntu12.04删除unity,安装gnome3">
+<img class="home-thumb" src="http://www.averainy.info/wp-content/themes/HotNewspro/images/random/6.jpg" width="140px" height="100px" alt="ubuntu12.04删除unity,安装gnome3"/>
+</a>
+</div>
+	</div>
+		</div>	<div class="clear"></div>
+		<i class="lt"></i>
+		<i class="rt"></i>
+</div>
+<div class="entry_sb">
+	<i class="lb"></i>
+	<i class="rb"></i>
+</div>	<!-- end: relatedposts -->
+	<div class="ct"></div>
+<!-- You can start editing here. -->
+			<!-- If comments are closed. -->
+		<p class="nocomments">抱歉!评论已关闭.</p>
+						 
+	</div>
+
+<!-- end: content -->
+<!-- huaban share begin-->
+<script charset="utf-8" defer="defer" type="text/javascript">
+(function(d,t) {
+var appendScript = function() {
+var a = d.createElement('script');
+a.id = 'huaban_share_script';
+a.async = true;
+a.setAttribute('charset','utf-8');
+a.src = 'http://huaban.com/js/pinmarklet.js?' + Math.floor(+new Date/1E7);
+var s = d.getElementsByTagName(t)[0];
+s.parentNode.insertBefore(a, s);
+}
+if (window.attachEvent) {
+window.attachEvent('onload', function(){setTimeout(appendScript, 1000);});
+} else {
+appendScript();
+}
+})(document, 'script');
+</script>
+<!-- huaban share end-->
+<div id="sidebar">
+	
+		<div id="tabs">
+	<div class="box_top">
+		<i class="rt"></i>
+	</div>
+	<ul class="htotabs">
+		<li class="widget1"><a href="#tab-widget1">最新文章</a></li>
+		<li class="widget2"><a href="#tab-widget2">本月排行</a></li>
+		<li class="widget3"><a href="#tab-widget3">分类目录</a></li>
+		<div class="clear"></div>
+	</ul>
+	<div class="tab-inside">
+		<ul id="tab-widget1">
+			<div class="tab_latest">
+				<ul>
+										<li><a href="http://www.averainy.info/%e8%a7%a3%e5%86%b3lighttpd%e5%90%af%e5%8a%a8%e6%97%b6%e6%8a%a5server-c-722-couldnt-set-max-filedescriptors-permission-denied%e9%94%99%e8%af%af/" rel="bookmark" title="详细阅读 解决lighttpd启动时报(server.c.722) couldn&#8217;t set &#8216;max filedescriptors&#8217; Permission denied错误">解决lighttpd启动时报(server.c.722</a></li>
+										<li><a href="http://www.averainy.info/linux-network-is-unreachable-%e6%95%85%e9%9a%9c%e8%a7%a3%e5%86%b3%e5%8a%9e%e6%b3%95/" rel="bookmark" title="详细阅读 linux network is unreachable 故障解决办法">linux network is unreachable 故障</a></li>
+										<li><a href="http://www.averainy.info/xcode%e8%b0%83%e8%af%95%e8%a7%82%e6%84%9f/" rel="bookmark" title="详细阅读 xcode调试观感">xcode调试观感</a></li>
+										<li><a href="http://www.averainy.info/%e4%bd%a0%e7%9c%9f%e7%9a%84%e8%ae%a4%e4%b8%baiphone%e5%8f%aa%e6%98%af%e4%b8%80%e9%83%a8%e6%89%8b%e6%9c%ba%e4%b9%88%ef%bc%9fzt%e4%b8%8b/" rel="bookmark" title="详细阅读 你真的认为iphone只是一部手机么？ZT(下)">你真的认为iphone只是一部手机么？Z</a></li>
+										<li><a href="http://www.averainy.info/%e4%bd%a0%e7%9c%9f%e7%9a%84%e8%ae%a4%e4%b8%baiphone%e5%8f%aa%e6%98%af%e4%b8%80%e9%83%a8%e6%89%8b%e6%9c%ba%e4%b9%88%ef%bc%9fzt/" rel="bookmark" title="详细阅读 你真的认为iphone只是一部手机么？ZT(上)">你真的认为iphone只是一部手机么？Z</a></li>
+										<li><a href="http://www.averainy.info/python%e7%9b%b8%e5%85%b3%ef%bc%9a%e9%81%8d%e5%8e%86%e7%9b%ae%e5%bd%95/" rel="bookmark" title="详细阅读 python相关：遍历目录">python相关：遍历目录</a></li>
+										<li><a href="http://www.averainy.info/%e3%80%90shell%e7%9b%b8%e5%85%b3%e3%80%91%e6%89%b9%e9%87%8f%e8%bd%ac%e6%8d%a2%e6%96%87%e4%bb%b6%e7%bc%96%e7%a0%81/" rel="bookmark" title="详细阅读 【shell相关】批量转换文件编码">【shell相关】批量转换文件编码</a></li>
+										<li><a href="http://www.averainy.info/%e6%8b%89%e6%89%8b%e7%bd%91%ef%bc%8c%e8%bf%99%e4%b9%88%e5%b1%8c%ef%bc%8c%e4%bd%a0%e7%88%b8%e5%a6%88%e7%9f%a5%e9%81%93%e5%90%97/" rel="bookmark" title="详细阅读 拉手网，这么屌，你爸妈知道吗">拉手网，这么屌，你爸妈知道吗</a></li>
+										<li><a href="http://www.averainy.info/%e7%a5%9e%e5%81%b7%e5%a5%b6%e7%88%b82-despicable-me-2-2013-%e4%b8%8b%e8%bd%bd/" rel="bookmark" title="详细阅读 神偷奶爸2 Despicable Me 2 (2013) 下载">神偷奶爸2 Despicable Me 2 (2013</a></li>
+										<li><a href="http://www.averainy.info/beautiful-soup%e7%9b%b8%e5%85%b3find_all%e8%bf%87%e6%bb%a4%e5%87%bd%e6%95%b0%e6%b5%8b%e8%af%95/" rel="bookmark" title="详细阅读 Beautiful Soup相关:find_all过滤函数测试">Beautiful Soup相关:find_all过滤</a></li>
+									</ul>
+	<div class="clear"></div>
+			</div>
+		</ul>
+		<ul id="tab-widget2">
+			<div class="tab_latest">
+				<ul>
+									</ul>
+			</div>
+  		</ul>
+		<ul id="tab-widget3"> 
+			<div class="categories_c">
+				<ul>	<li class="cat-item cat-item-3"><a href="http://www.averainy.info/category/c-program/" title="C语言相关">c program</a>
+</li>
+	<li class="cat-item cat-item-289"><a href="http://www.averainy.info/category/share/coupon/" title="查看 coupon 下的所有文章">coupon</a>
+</li>
+	<li class="cat-item cat-item-283"><a href="http://www.averainy.info/category/life/" title="查看 life 下的所有文章">life</a>
+</li>
+	<li class="cat-item cat-item-1"><a href="http://www.averainy.info/category/linux/" title="linux，shell，服务器相关">linux</a>
+</li>
+	<li class="cat-item cat-item-80"><a href="http://www.averainy.info/category/python/" title="查看 python 下的所有文章">python</a>
+</li>
+	<li class="cat-item cat-item-18"><a href="http://www.averainy.info/category/share/wordpress/" title="分享wordpress的技巧和插件">wordpress</a>
+</li>
+	<li class="cat-item cat-item-4"><a href="http://www.averainy.info/category/share/download-resource/" title="分享一些有用的资源">下载资源</a>
+</li>
+	<li class="cat-item cat-item-10"><a href="http://www.averainy.info/category/share/" title="查看 分享 下的所有文章">分享</a>
+</li>
+	<li class="cat-item cat-item-5"><a href="http://www.averainy.info/category/diary/" title="日记或者周记">扯淡</a>
+</li>
+</ul>
+				<div class="clear"></div>
+			</div>
+		</ul>
+	</div>
+</div>
+<div class="box-bottom">
+	<i class="lb"></i>
+	<i class="rb"></i>
+</div>
+<script type="text/javascript">
+jQuery(document).ready(function(){
+	jQuery( '.htotabs').each(function(){
+		jQuery(this).children( 'li').children( 'a:first').addClass( 'selected' ); // Add .selected class to first tab on load
+	});
+	jQuery( '.tab-inside > *').hide();
+	jQuery( '.tab-inside > *:first-child').show();
+	jQuery( '.htotabs li a').click(function(evt){ // Init Click funtion on Tabs
+		var clicked_tab_ref = jQuery(this).attr( 'href' ); // Strore Href value
+		jQuery(this).parent().parent().children( 'li').children( 'a').removeClass( 'selected' ); //Remove selected from all tabs
+		jQuery(this).addClass( 'selected' );
+		jQuery(this).parent().parent().parent().children( '.tab-inside').children( '*').hide();
+		jQuery( '.tab-inside ' + clicked_tab_ref).fadeIn(500);
+		 evt.preventDefault();
+	})
+})
+</script>	
+	<div class="widget">
+			</div>
+
+	<div class="widget">
+									</div>
+
+	<div class="widget">
+		<h3>你可能需要</h3><div class="box">			<div class="textwidget"><script src="http://www.averainy.info/ads/sidebar.js"></script></div>
+		</div>
+    	<div class="box-bottom">
+			<i class="lb"></i>
+			<i class="rb"></i>
+		</div><h3>我的腾讯微博</h3><div class="box">			<div class="textwidget"><iframe frameborder="0" scrolling="no" src="http://show.v.t.qq.com/index.php?c=show&a=index&n=zyx362539431&w=0&h=598&fl=2&l=30&o=17&co=0" width="100%" height="598"></iframe></div>
+		</div>
+    	<div class="box-bottom">
+			<i class="lb"></i>
+			<i class="rb"></i>
+		</div><div class="rssblock">
+<script type="text/javascript">	
+	var s;
+	function showMessage(){
+	window.clearTimeout(s);
+	document.getElementById("message").style.display="block";
+	}
+	function hiddenMessage(){
+	s=window.setTimeout("hidden();",500);
+	}
+	function hidden(){
+	document.getElementById("message").style.display="none";
+	}
+</script>
+
+	<h3>订阅本站</h3>
+	<span onmouseover="showMessage()" onmouseout="hiddenMessage()"><div id="rssfeed"><a href="http://www.averainy.info/feed" title="订阅本站" class="image"><img src="http://www.averainy.info/wp-content/themes/HotNewspro/images/rsssub.png" /></a></div></span>
+	<div id="message" style="display:none" onmouseover="showMessage()" onmouseout="hiddenMessage()">
+		</div>
+	<div class="box-bottom">
+		<i class="lb"></i>
+		<i class="rb"></i>
+	</div>
+	<div class="clear"></div>
+</div><div class="box_top">
+	<i class="rt"></i>
+	<i class="lt"></i>
+</div>
+<div class="categories">
+	<div class="tag_c"><a href='http://www.averainy.info/tag/c/' class='tag-link-242' title='4 个话题' style="color:#5b81e0;font-size: 12.6769230769px;;">c++</a>
+<a href='http://www.averainy.info/tag/centos/' class='tag-link-45' title='5 个话题' style="color:#e1976d;font-size: 12.9230769231px;;">centos</a>
+<a href='http://www.averainy.info/tag/chrome/' class='tag-link-118' title='4 个话题' style="color:#109bfa;font-size: 12.6769230769px;;">chrome</a>
+<a href='http://www.averainy.info/tag/c%e8%af%ad%e8%a8%80/' class='tag-link-30' title='10 个话题' style="color:#dfc356;font-size: 13.7230769231px;;">C语言</a>
+<a href='http://www.averainy.info/tag/framebuffer/' class='tag-link-17' title='2 个话题' style="color:#c9359f;font-size: 12px;;">framebuffer</a>
+<a href='http://www.averainy.info/tag/linux/' class='tag-link-1' title='59 个话题' style="color:#ed36a0;font-size: 16px;;">linux</a>
+<a href='http://www.averainy.info/tag/mips/' class='tag-link-160' title='3 个话题' style="color:#3ab975;font-size: 12.3692307692px;;">mips</a>
+<a href='http://www.averainy.info/tag/nginx/' class='tag-link-38' title='3 个话题' style="color:#6d0b4a;font-size: 12.3692307692px;;">nginx</a>
+<a href='http://www.averainy.info/tag/php/' class='tag-link-85' title='3 个话题' style="color:#4de1cb;font-size: 12.3692307692px;;">php</a>
+<a href='http://www.averainy.info/tag/python/' class='tag-link-80' title='31 个话题' style="color:#a0f17f;font-size: 15.1692307692px;;">python</a>
+<a href='http://www.averainy.info/tag/sed/' class='tag-link-69' title='3 个话题' style="color:#f9a01e;font-size: 12.3692307692px;;">sed</a>
+<a href='http://www.averainy.info/tag/shell/' class='tag-link-42' title='9 个话题' style="color:#a78e64;font-size: 13.6px;;">shell</a>
+<a href='http://www.averainy.info/tag/ssh/' class='tag-link-51' title='4 个话题' style="color:#c57e38;font-size: 12.6769230769px;;">ssh</a>
+<a href='http://www.averainy.info/tag/sshd/' class='tag-link-47' title='3 个话题' style="color:#9f140e;font-size: 12.3692307692px;;">sshd</a>
+<a href='http://www.averainy.info/tag/ubuntu/' class='tag-link-7' title='8 个话题' style="color:#3b1739;font-size: 13.4461538462px;;">ubuntu</a>
+<a href='http://www.averainy.info/tag/vim/' class='tag-link-168' title='3 个话题' style="color:#2d48ee;font-size: 12.3692307692px;;">vim</a>
+<a href='http://www.averainy.info/tag/windows/' class='tag-link-226' title='3 个话题' style="color:#a726ec;font-size: 12.3692307692px;;">windows</a>
+<a href='http://www.averainy.info/tag/wordpress/' class='tag-link-18' title='10 个话题' style="color:#c758c6;font-size: 13.7230769231px;;">wordpress</a>
+<a href='http://www.averainy.info/tag/%e5%88%86%e4%ba%ab/' class='tag-link-163' title='4 个话题' style="color:#e482c7;font-size: 12.6769230769px;;">分享</a>
+<a href='http://www.averainy.info/tag/%e5%90%90%e6%a7%bd/' class='tag-link-49' title='4 个话题' style="color:#58625b;font-size: 12.6769230769px;;">吐槽</a>
+<a href='http://www.averainy.info/tag/%e5%b5%8c%e5%85%a5%e5%bc%8f/' class='tag-link-158' title='3 个话题' style="color:#3ab8ee;font-size: 12.3692307692px;;">嵌入式</a>
+<a href='http://www.averainy.info/tag/%e6%89%93%e5%8c%85/' class='tag-link-44' title='2 个话题' style="color:#fee2d;font-size: 12px;;">打包</a>
+<a href='http://www.averainy.info/tag/%e6%89%af%e6%b7%a1/' class='tag-link-13' title='21 个话题' style="color:#7b6009;font-size: 14.6461538462px;;">扯淡</a>
+<a href='http://www.averainy.info/tag/%e6%8a%80%e5%b7%a7/' class='tag-link-52' title='3 个话题' style="color:#6aec86;font-size: 12.3692307692px;;">技巧</a>
+<a href='http://www.averainy.info/tag/%e8%84%9a%e6%9c%ac/' class='tag-link-81' title='5 个话题' style="color:#6c2b35;font-size: 12.9230769231px;;">脚本</a></div>
+</div>
+<div class="clear"></div>
+<div class="box-bottom">
+	<i class="lb"></i>
+	<i class="rb"></i>
+</div><h3>分类目录</h3>	
+<div class="categories">
+	<div class="categories_c">
+		<ul>	<li class="cat-item cat-item-3"><a href="http://www.averainy.info/category/c-program/" title="C语言相关">c program</a>
+</li>
+	<li class="cat-item cat-item-289"><a href="http://www.averainy.info/category/share/coupon/" title="查看 coupon 下的所有文章">coupon</a>
+</li>
+	<li class="cat-item cat-item-283"><a href="http://www.averainy.info/category/life/" title="查看 life 下的所有文章">life</a>
+</li>
+	<li class="cat-item cat-item-1"><a href="http://www.averainy.info/category/linux/" title="linux，shell，服务器相关">linux</a>
+</li>
+	<li class="cat-item cat-item-80"><a href="http://www.averainy.info/category/python/" title="查看 python 下的所有文章">python</a>
+</li>
+	<li class="cat-item cat-item-18"><a href="http://www.averainy.info/category/share/wordpress/" title="分享wordpress的技巧和插件">wordpress</a>
+</li>
+	<li class="cat-item cat-item-4"><a href="http://www.averainy.info/category/share/download-resource/" title="分享一些有用的资源">下载资源</a>
+</li>
+	<li class="cat-item cat-item-10"><a href="http://www.averainy.info/category/share/" title="查看 分享 下的所有文章">分享</a>
+</li>
+	<li class="cat-item cat-item-5"><a href="http://www.averainy.info/category/diary/" title="日记或者周记">扯淡</a>
+</li>
+</ul>
+	</div>
+	<div class="clear"></div>
+</div>
+<div class="box-bottom">
+	<i class="lb"></i>
+	<i class="rb"></i>
+</div>	</div>
+
+	
+	
+	<div id="top-comments">
+	<h3>最活跃的读者</h3>
+	<div class="box">
+		<div class="box_comment">
+						<div class="clear"></div>
+		</div>
+	</div>
+	<div class="box-bottom">
+		<i class="lb"></i>
+		<i class="rb"></i>
+	</div>
+</div>
+	<div class="widget">
+			</div>
+
+	<div class="widget">
+									</div>
+
+				<div class="clear"></div>
+</div><div class="clear"></div>
+<div class="footer_top">
+	<div id="menu">
+		<div class="menu-menu-bar-container"><ul id="menu-menu-bar-1" class="menu"><li class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-7"><a href="http://www.averainy.info/category/c-program/">c program</a></li>
+<li class="menu-item menu-item-type-taxonomy menu-item-object-category current-post-ancestor current-menu-parent current-post-parent menu-item-8"><a href="http://www.averainy.info/category/linux/">linux</a></li>
+<li class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-143"><a href="http://www.averainy.info/category/python/">python</a></li>
+<li class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-140"><a href="http://www.averainy.info/category/share/">分享</a></li>
+<li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-11"><a href="http://www.averainy.info/links/">友情链接</a></li>
+<li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-424"><a href="http://www.averainy.info/zuixin-youhuiquan/">最新优惠券</a></li>
+</ul></div>	</div>
+	<h2 class="blogtitle">
+	<a href="http://www.averainy.info/" title="averiany涂鸦馆">返回首页</a></h2>
+		<big class="lt"></big>
+	<big class="rt"></big>
+</div>
+<!-- 页脚 -->
+<div class="footer_bottom_a">
+	Copyright &copy; 2011-2014 averiany涂鸦馆&nbsp;&nbsp;保留所有权利.
+	&nbsp;&nbsp;基于<a href="http://wordpress.org/" title="WordPress.org"> WordPress</a> 技术创建
+	&nbsp;&nbsp;Theme by <a target="_blank" href="http://zmingcx.com">Robin</a>
+	<!-- Baidu Button BEGIN -->
+<script type="text/javascript" id="bdshare_js" data="type=slide&img=1&uid=478656" ></script>
+<script type="text/javascript" id="bdshell_js"></script>
+<script type="text/javascript">
+	document.getElementById("bdshell_js").src = "http://bdimg.share.baidu.com/static/js/shell_v2.js?t=" + new Date().getHours();
+</script>
+<!-- Baidu Button END -->
+	<big class="lb"></big>
+	<big class="rb"></big>
+</div>
+<!-- 首页页脚 -->
+ <div class="clear"></div>
+</div>
+
+<p style="margin:0;padding:0;height:1px;overflow:hidden;">
+    <script type="text/javascript"><!--
+        var wumiiSitePrefix = "http://www.averainy.info";
+        var wumiiEnableCustomPos = true;
+        var wumiiParams = "&num=12&mode=3&displayInFeed=0&version=1.0.5.5&pf=WordPress3.2.1";
+    //--></script><script type="text/javascript" src="http://widget.wumii.com/ext/relatedItemsWidget.htm"></script><a href="http://www.wumii.com/widget/relatedItems.htm" style="border:0;"><img src="http://static.wumii.com/images/pixel.png" alt="无觅相关文章插件，快速提升流量" style="border:0;padding:0;margin:0;" /></a>
+</p><script type="text/javascript" src="http://tajs.qq.com/stats?sId=26081076" charset="UTF-8"></script>
+
+</body></html>
+
+<!-- Dynamic page generated in 0.287 seconds. -->
+<!-- Cached page generated by WP-Super-Cache on 2014-10-22 21:22:29 -->
+
+<!-- super cache -->

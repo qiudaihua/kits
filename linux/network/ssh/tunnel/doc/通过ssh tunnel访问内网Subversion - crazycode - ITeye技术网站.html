@@ -1,0 +1,377 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="zh-CN" dir="ltr">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <title>通过ssh tunnel访问内网Subversion - crazycode - ITeye技术网站</title>
+    <meta name="description" content="现在公司局域网内有一个subversion server，日常开发的代码都在里面，在外网是不能访问的。但有时需要在家里更新和提交代码，这时就有一些麻烦了，公� ..." />
+    <meta name="keywords" content="SSH, subversion, SVN, Linux, Ubuntu 通过ssh tunnel访问内网Subversion" />
+    <link rel="shortcut icon" href="/images/favicon.ico" type="image/x-icon" />
+    <link rel="search" type="application/opensearchdescription+xml" href="/open_search.xml" title="ITeye" />
+    <link href="/rss" rel="alternate" title="crazycode" type="application/rss+xml" />
+    <link href="http://www.iteye.com/stylesheets/blog.css?1406686577" media="screen" rel="stylesheet" type="text/css" />
+<link href="http://www.iteye.com/stylesheets/themes/blog/black.css?1326191326" media="screen" rel="stylesheet" type="text/css" />
+    <script src="http://www.iteye.com/javascripts/application.js?1358214518" type="text/javascript"></script>
+    <script type="text/javascript">
+
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-535605-1']);
+  _gaq.push(['_setDomainName', 'iteye.com']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+
+</script>
+
+
+      <link href="http://www.iteye.com/javascripts/syntaxhighlighter/SyntaxHighlighter.css?1348819953" media="screen" rel="stylesheet" type="text/css" />
+  <script src="http://www.iteye.com/javascripts/syntaxhighlighter/shCoreCommon.js?1325907333" type="text/javascript"></script>
+<script src="http://www.iteye.com/javascripts/hotkey.js?1324994303" type="text/javascript"></script>
+  <script src="http://www.iteye.com/javascripts/code_favorites.js?1358214518" type="text/javascript"></script>
+<script src="http://www.iteye.com/javascripts/weiboshare.js?1324994303" type="text/javascript"></script>
+  </head>
+  <body>
+    <div id="header">
+      <div id="blog_site_nav">
+  <a href="http://www.iteye.com/" class="homepage">首页</a>
+  <a href="http://www.iteye.com/news">资讯</a>
+  <a href="http://www.iteye.com/magazines">精华</a>
+  <a href="http://www.iteye.com/forums">论坛</a>
+  <a href="http://www.iteye.com/ask">问答</a>
+  <a href="http://www.iteye.com/blogs">博客</a>
+  <a href="http://www.iteye.com/blogs/subjects">专栏</a>
+  <a href="http://www.iteye.com/groups">群组</a>
+  <a href="#" onclick="return false;" id="msna"><u>更多</u> <small>▼</small></a>
+  <div class="quick_menu" style="display:none;">
+    <a target="_blank" href="http://job.iteye.com/iteye">招聘</a>
+    <a href="http://www.iteye.com/search">搜索</a>
+  </div>
+</div>
+
+      <div id="user_nav">
+      <a href="/login" class="welcome" title="登录">您还未登录 !</a>
+    <a href="/login">登录</a>
+    <a href="/signup" class="nobg">注册</a>
+  </div>
+
+    </div>
+
+    <div id="page">
+      <div id="branding" class="clearfix">
+        <div id="blog_name">
+          <h1><a href="/">crazycode</a></h1>
+        </div>
+        <div id='fd'></div>
+        <div id="blog_navbar">
+          <ul>
+            <li class='blog_navbar_for'><a href="http://crazycode.iteye.com"><strong>博客</strong></a></li>
+            <li ><a href="/weibo">微博</a></li>
+            <li ><a href="/album">相册</a></li>
+            <li ><a href="/link">收藏</a></li>
+            <li ><a href="/blog/guest_book">留言</a></li>
+            <li ><a href="/blog/profile">关于我</a></li>
+          </ul>
+    
+          <div class="search">
+            <form action="/blog/search" method="get">
+              <input class="search_text" id="query" name="query" style="margin-left: 10px;width: 110px;" type="text" value="" />
+              <input class="submit_search" type="submit" value="" />
+            </form>
+          </div> 
+          <div id="fd"></div>         
+        </div>
+      </div>
+      
+      <div id="content" class="clearfix">
+        <div id="main">
+          
+
+
+
+          
+
+
+<div class="h-entry" style='display:none'>
+  <a href="http://crazycode.iteye.com" class="p-author" target="_blank">crazycode</a>
+</div>
+
+
+<div class="blog_main">
+  <div class="blog_title">
+    <h3>
+      <a href="/blog/568754">通过ssh tunnel访问内网Subversion</a>
+      <em class="actions">      </em>
+    </h3>
+    <ul class='blog_categories'><strong>博客分类：</strong> <li><a href="/category/6926">Linux</a></li> </ul>
+        <div class='news_tag'><a href="http://www.iteye.com/blogs/tag/SSH">SSH</a><a href="http://www.iteye.com/blogs/tag/subversion">subversion</a><a href="http://www.iteye.com/blogs/tag/SVN">SVN</a><a href="http://www.iteye.com/blogs/tag/Linux">Linux</a><a href="http://www.iteye.com/blogs/tag/Ubuntu">Ubuntu</a>&nbsp;</div>
+  </div>
+
+  <div id="blog_content" class="blog_content">
+    现在公司局域网内有一个subversion server，日常开发的代码都在里面，在外网是不能访问的。但有时需要在家里更新和提交代码，这时就有一些麻烦了，公司IT提供了VPN，但只有windows版本，我的linux box不能安装，而且日常工作环境都是linux了。还好还有运维的兄弟为我打开了一个ssh端口，这样就可以通过这个口正常使用svn了。<br />现在问题变成了如何让svn能够使用ssh tunnel了，大家知道，svn可以直接通过ssh读取svn库，但需要在svn server上直接开ssh端口，我们的环境不是这样的；另外svn可以设置代理，但目前只支持HTTP/HTTPS代理，而ssh tunnel开通用代理时，是一个socks5代理，svn不支持。<br />网上找了一下，linux环境下可以通过一些socks包装工具来包装应用程序，使不支持socks代理的应用，可以透明的使用socks代理。比较早的有tsocks，可惜不更新了，现在群众比较推荐ProxyChains，使用上相当灵活，也不容易出错。以下记录下使用ProxyChains访问内网svn的步骤，供大家参考。<br /><br />1、首先是安装ProxyChains（废话！）<br />在ubuntu中可以从源安装：<br />&nbsp;&nbsp;&nbsp; sudo apt-get install proxychains<br /><br />2、配置ProxyChains<br />假设我的ssh tunnel将开在本地的19002（纯个人喜好，大于1024以上的端口均可），则新建一个/etc/proxychains.conf，加入以下内容：<br /><pre class="java" name="code">
+tcp_read_time_out 15000
+tcp_connect_time_out 10000
+[ProxyList]
+socks5 127.0.0.1 19002
+</pre><br /><br />3、打开ssh tunnel<br />我使用以下命令打开tunnel:<br />&nbsp;&nbsp;&nbsp; $ ssh -qTfnN -D 19002 username@58.xx.xxx.xxx -p 18022<br />以上58.xx.xxx.xxx是公网IP，18022是公网的端口，如果是默认的22端口，则-p段可以不写。<br /><br />4、使用svn<br />只要在任意命令前面加上proxychains，即可使用配置的socks代理，而不需要其它设置。<br />如我们使用svn更新代码：<br />&nbsp;&nbsp;&nbsp; $ proxychains svn up<br />提交代码：<br />&nbsp;&nbsp;&nbsp; $ proxychains svn ci -m "修改xxx"<br /><br />可以看出，只需要在正常的svn工作目录上，通过加上proxychains前缀命令，即可和在内网中一样使用subversion。实际上，通过proxychains可以很方便的访问内网其它服务，如：<br />访问ssh：<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; $ proxychains ssh root@192.168.1.8<br />使用telnet：<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; $ proxychains telnet 192.168.1.5<br />访问ftp：<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; $ proxychains ftp 192.168.1.3
+  </div>
+
+  
+
+
+  <IFRAME SRC="/iframe_ggbd/794" SCROLLING=no WIDTH=468 HEIGHT=60 FRAMEBORDER=0></IFRAME>
+  
+  <div id="bottoms" class="clearfix">
+    <div id="digg_bottom" class="clearfix"><div class='digged'><strong>0</strong> <br/>顶</div><div class='digged'><strong>0</strong> <br/>踩</div></div>
+    <div id="share_weibo">分享到：
+      <a data-type='sina' href="javascript:;" title="分享到新浪微博"><img src="/images/sina.jpg"></a>
+      <a data-type='qq' href="javascript:;" title="分享到腾讯微博"><img src="/images/tec.jpg"></a>
+    </div>
+  </div>
+
+  <div class="blog_nav">
+    <div class="pre_next">
+      
+      
+      <a href="/blog/430044" class="pre" title="分享我的emacs配置-用于Ruby on Rails开发">分享我的emacs配置-用于Ruby on Rails开 ...</a>
+    </div>
+  </div>
+  <div class="blog_bottom">
+    <ul>
+      <li>2010-01-12 22:37</li>
+      <li>浏览 4005</li>
+      <li><a href="#comments">评论(0)</a></li>
+      
+      
+      <li>分类:<a href="http://www.iteye.com/blogs/category/os">操作系统</a></li>      
+      <li class='last'><a href="http://www.iteye.com/wiki/blog/568754" target="_blank" class="more">相关推荐</a></li>
+    </ul>
+  </div>
+
+  <div class="blog_comment">
+    <h5>评论</h5>
+    <a id="comments" name="comments"></a>
+    
+    
+    
+  </div>
+
+  <div class="blog_comment">
+    <h5>发表评论</h5>
+            <p style="text-align:center; margin-top:30px;margin-bottom:0px;"><a href="/login" style="background-color:white;"> <img src="/images/login_icon.png" style="vertical-align:middle; margin-right: 10px;" /></a><a href="/login">  您还没有登录,请您登录后再发表评论 </a></p>
+      </div>
+</div>
+
+
+<script type="text/javascript">
+  dp.SyntaxHighlighter.HighlightAll('code', true, true);
+
+  $$('#main .blog_content pre[name=code]').each(function(pre, index){ // blog content
+    var post_id = 568754;
+    var location = window.location;
+    source_url = location.protocol + "//" + location.host + location.pathname + location.search;
+    pre.writeAttribute('codeable_id', post_id);
+    pre.writeAttribute('codeable_type', "Blog");
+    pre.writeAttribute('source_url', source_url);
+    pre.writeAttribute('pre_index', index);
+    pre.writeAttribute('title', '通过ssh tunnel访问内网Subversion');
+  });
+
+  fix_image_size($$('div.blog_content img'), 700);
+
+  function processComment() {
+    $$('#main .blog_comment > div').each(function(comment){// comment
+      var post_id = comment.id.substr(2);
+      $$("#"+comment.id+" pre[name=code]").each(function(pre, index){
+        var location = window.location;
+        source_url = location.protocol + "//" + location.host + location.pathname + location.search;
+        source_url += "#" + comment.id;
+        pre.writeAttribute('codeable_id', post_id);
+        pre.writeAttribute('codeable_type', "BlogComment");
+        pre.writeAttribute('source_url', source_url);
+        pre.writeAttribute('pre_index', index);
+        pre.writeAttribute('title', '通过ssh tunnel访问内网Subversion');
+      });
+    });
+  }
+
+  function quote_comment(id) {
+    new Ajax.Request('/editor/quote', {
+      parameters: {'id':id, 'type':'BlogComment'},
+      onSuccess:function(response){editor.bbcode_editor.textarea.insertAfterSelection(response.responseText);
+        Element.scrollTo(editor.bbcode_editor.textarea.element);}
+    });
+  }
+
+  code_favorites_init();
+  processComment();
+  new WeiboShare({share_buttons: $('share_weibo'), img_scope: $('blog_content')});
+</script>
+
+
+
+
+        </div>
+
+        <div id="local">
+          <div class="local_top"></div>
+          <div id="blog_owner">
+  <div id="blog_owner_logo"><a href='http://crazycode.iteye.com'><img alt="crazycode的博客" class="logo" src="http://www.iteye.com/images/user-logo.gif?1324994303" title="crazycode的博客: crazycode" width="" /></a></div>
+  <div id="blog_owner_name">crazycode</div>
+</div>
+
+          <div id="blog_actions">
+            <ul>
+              <li>浏览: 95545 次</li>
+              <li>性别: <img alt="Icon_minigender_1" src="http://www.iteye.com/images/icon_minigender_1.gif?1324994303" title="男" /></li>
+              <li>来自: 上海</li>
+              <li><img src='/images/status/offline.gif'/></li>
+              
+            </ul>
+          </div>
+          <div id="user_visits" class="clearfix">
+            <h5>最近访客 <span style='font-weight:normal;font-size:12px;padding-left:30px;'><a href="/blog/user_visits">更多访客&gt;&gt;</a></span></h5>
+            
+              <div class="user_visit">
+                <div class="logo"><a href='http://dylinshi126.iteye.com' target='_blank'><img alt="dylinshi126的博客" class="logo" src="http://www.iteye.com/images/user-logo-thumb.gif?1324994303" title="dylinshi126的博客: " width="48px" /></a></div>
+                <div class="left"><a href='http://dylinshi126.iteye.com' target='_blank' title='dylinshi126'>dylinshi126</a></div>
+              </div>
+            
+              <div class="user_visit">
+                <div class="logo"><a href='http://sirus369.iteye.com' target='_blank'><img alt="sirus369的博客" class="logo" src="http://www.iteye.com/images/user-logo-thumb.gif?1324994303" title="sirus369的博客: " width="48px" /></a></div>
+                <div class="left"><a href='http://sirus369.iteye.com' target='_blank' title='sirus369'>sirus369</a></div>
+              </div>
+            
+              <div class="user_visit">
+                <div class="logo"><a href='http://g3258.iteye.com' target='_blank'><img alt="G3258的博客" class="logo" src="http://www.iteye.com/upload/logo/user/1015734/314cfb21-8695-3ee3-8971-ea734178bfb0-thumb.jpg?1411836172" title="G3258的博客: Test" width="48px" /></a></div>
+                <div class="left"><a href='http://g3258.iteye.com' target='_blank' title='G3258'>G3258</a></div>
+              </div>
+            
+              <div class="user_visit">
+                <div class="logo"><a href='http://546144153.iteye.com' target='_blank'><img alt="546144153的博客" class="logo" src="http://www.iteye.com/images/user-logo-thumb.gif?1324994303" title="546144153的博客: " width="48px" /></a></div>
+                <div class="left"><a href='http://546144153.iteye.com' target='_blank' title='546144153'>546144153</a></div>
+              </div>
+            
+          </div>
+
+          
+
+                      <div id="blog_menu">
+              <h5>文章分类</h5>
+              <ul>
+                <li><a href="/">全部博客 (40)</a></li>
+                
+                  <li><a href="/category/5613">Java (3)</a></li>
+                
+                  <li><a href="/category/5614">Rails (10)</a></li>
+                
+                  <li><a href="/category/5615">随笔 (6)</a></li>
+                
+                  <li><a href="/category/6926">Linux (17)</a></li>
+                
+                  <li><a href="/category/36035">项目管理 (2)</a></li>
+                
+              </ul>
+            </div>
+            <div id='month_blogs'>
+              <h5>社区版块</h5>
+              <ul>
+                <li><a href="/blog/news">我的资讯</a> (0)</li>
+                <li>
+                  <a href="/blog/post">我的论坛</a> (47)
+                </li>
+                <li><a href="/blog/answered_problems">我的问答</a> (0)</li>
+              </ul>
+            </div>
+            <div id="month_blogs">
+              <h5>存档分类</h5>
+              <ul>
+                
+                  <li><a href="/blog/monthblog/2010-01">2010-01</a> (1)</li>
+                
+                  <li><a href="/blog/monthblog/2009-07">2009-07</a> (2)</li>
+                
+                  <li><a href="/blog/monthblog/2009-06">2009-06</a> (2)</li>
+                
+                <li><a href="/blog/monthblog_more">更多存档...</a></li>
+              </ul>
+            </div>
+            
+            
+
+            <div id="guest_books">
+              <h5>最新评论</h5>
+              <ul>
+                
+                <li>
+                  <a href='http://yanghj-eye.iteye.com' target='_blank' title='yanghj_eye'>yanghj_eye</a>： 
+                  一般不太用，git log<br />
+                  <a href="/blog/311564#bc2238184">使用git bisect快速定位引入错误的版本</a>
+                </li>
+                
+                <li>
+                  <a href='http://coolesting.iteye.com' target='_blank' title='coolesting'>coolesting</a>： 
+                    可惜免费版本， 功能太少了， github的确不错， 我正 ...<br />
+                  <a href="/blog/212536#bc2211236">忽然明白了如何使用github，以及git的哲学</a>
+                </li>
+                
+                <li>
+                  <a href='http://hite.iteye.com' target='_blank' title='hite'>hite</a>： 
+                  我的gnome－do 不接受输入了。就是你在键盘上输入东西，没 ...<br />
+                  <a href="/blog/290756#bc1745258">Ubuntu Hack Gnome-do解决中文程序名的问题</a>
+                </li>
+                
+                <li>
+                  <a href='http://foyo.iteye.com' target='_blank' title='foyo99'>foyo99</a>： 
+                  正开始使用emacs,感觉很好！<br />
+                  <a href="/blog/430044#bc1686656">分享我的emacs配置-用于Ruby on Rails开发</a>
+                </li>
+                
+                <li>
+                  <a href='http://shohokujoe.iteye.com' target='_blank' title='shohokujoe'>shohokujoe</a>： 
+                  能否发一个注册码给我，谢谢！shohokujoe@gmail. ...<br />
+                  <a href="/blog/368154#bc1384223">发现一个好用的原型工具Balsamiq Mockups</a>
+                </li>
+                
+              </ul>
+            </div>
+
+            <div class="local_bottom"></div>
+          
+        </div>
+      </div>
+
+      <div id="footer" class="clearfix">
+        <div id="copyright">
+          <hr/>
+          声明：ITeye文章版权属于作者，受法律保护。没有作者书面许可不得转载。若作者同意转载，必须以超链接形式标明文章原始出处和作者。<br />
+          &copy; 2003-2014 ITeye.com.   All rights reserved.  [ 京ICP证110151号  京公网安备110105010620 ]
+        </div>
+      </div>
+    </div>
+    <script type="text/javascript">
+  document.write("<img src='http://stat.iteye.com/?url="+ encodeURIComponent(document.location.href) + "&referrer=" + encodeURIComponent(document.referrer) + "&user_id=' width='0' height='0' />");
+</script>
+
+<script src="http://csdnimg.cn/pubfooter/js/tracking.js?version=20130923164150" type="text/javascript"></script>
+
+    
+<script type="text/javascript">
+
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-6526508-1']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+
+</script>
+      
+    
+  </body>
+</html>

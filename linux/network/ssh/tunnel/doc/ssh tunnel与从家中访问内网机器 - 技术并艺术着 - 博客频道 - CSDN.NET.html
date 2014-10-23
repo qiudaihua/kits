@@ -1,0 +1,739 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+     
+    <html xmlns="http://www.w3.org/1999/xhtml">
+    
+<head>
+
+    <script id="allmobilize" charset="utf-8" src="http://a.yunshipei.com/46aae4d1e2371e4aa769798941cef698/allmobilize.min.js"></script>
+ <meta http-equiv="Cache-Control" content="no-siteapp" /><link rel="alternate" media="handheld" href="#" />
+
+    <title>ssh tunnel与从家中访问内网机器 - 技术并艺术着
+        - 博客频道 - CSDN.NET</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="description" content="ssh tunnel与从家中访问公司内网机器&#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;作者：张华&#160; 发表于：2012-03-08版权声明：可以任意转载，转载时请务必以超链接形式标明文章原" />
+    <script src="http://static.blog.csdn.net/scripts/jquery.js" type="text/javascript"></script>
+    <script type="text/javascript" src="http://static.blog.csdn.net/scripts/ad.js?v=1.1"></script>
+        <!--new top-->
+               <link rel="stylesheet" href="http://static.csdn.net/public/common/toolbar/css/index.css">        <!--new top-->
+
+    <link rel="Stylesheet" type="text/css" href="http://static.blog.csdn.net/skin/default/css/style.css?v=1.1" />
+    <link id="RSSLink" title="RSS" type="application/rss+xml" rel="alternate" href="/quqi99/rss/list" />
+    <link rel="shortcut icon" href="http://csdnimg.cn/public/favicon.ico" />
+    <link type="text/css" rel="stylesheet" href="http://static.blog.csdn.net/scripts/SyntaxHighlighter/styles/default.css" />
+ 
+
+
+</head>
+<body>
+    
+   
+      <!--new top-->
+    <script id="toolbar-tpl-scriptId" fixed="true" prod="blog" skin="black" src="http://static.csdn.net/public/common/toolbar/js/html.js" type="text/javascript"></script>
+     <!--new top-->
+    <div id="container">
+        <div id="header">
+    <div class="header">
+        <div id="blog_title">
+            <h2>
+                <a href="http://blog.csdn.net/quqi99">技术并艺术着</a></h2>
+            <h3>张华的技术Blog</h3>
+            <div class="clear">
+            </div>
+        </div>
+        <div class="clear">
+        </div>
+    </div>
+</div>
+<div id="navigator">
+    <div class="navigator_bg">
+    </div>
+    <div class="navigator">
+        <ul>
+                <li id="btnContents"><a href="http://blog.csdn.net/quqi99?viewmode=contents"><span onclick="_gaq.push(['_trackEvent','function', 'onclick', 'blog_articles_mulu'])">
+                    <img src="http://static.blog.csdn.net/images/ico_list.gif">目录视图</span></a></li>
+                <li id="btnView"><a href="http://blog.csdn.net/quqi99?viewmode=list"><span onclick="_gaq.push(['_trackEvent','function', 'onclick', 'blog_articles_zhaiyao'])">
+                    <img src="http://static.blog.csdn.net/images/ico_summary.gif">摘要视图</span></a></li>
+                <li id="btnRss"><a href="http://blog.csdn.net/quqi99/rss/list"><span onclick="_gaq.push(['_trackEvent','function', 'onclick', 'blog_articles_RSS'])">
+                    <img src="http://static.blog.csdn.net/images/ico_rss.gif">订阅</span></a></li>                
+
+            </ul>
+    </div>
+</div>
+<script type="text/javascript">
+    var username = "quqi99";
+    var _blogger = username;
+    var blog_address = "http://blog.csdn.net/quqi99";
+    var static_host = "http://static.blog.csdn.net";
+    var currentUserName = "";  
+</script>
+
+        <div id="body">
+            <div id="main">
+                <div class="main">
+                        <div class="ad_class">
+<div class="notice tracking-ad" data-mod='popu_3' > 
+
+<a href="http://bbs.csdn.net/topics/390812950?page=2#post-398116601"target="_blank">
+<font color=blue>博客专家福利
+</font></a>
+&nbsp;&nbsp;&nbsp;
+
+<a href="http://blog.csdn.net/csdnproduct/article/details/40181275">
+<font color=red>公告：CSDN博客积分系统升级</font></a>
+
+&nbsp;&nbsp;&nbsp;&nbsp;
+
+<a href="http://blog.csdn.net/blogdevteam/article/details/40047403">
+<font color=blue>有奖试读&征文:我们在互联网上奋斗的故事
+</font></a>
+&nbsp;&nbsp;&nbsp;&nbsp;
+
+<a href="http://blog.csdn.net/blogdevteam/article/details/39894901">
+<font color=red>参与话题讨论，好礼等你拿
+</font></a>
+
+
+</div>                        </div>
+                        
+
+  
+<link href="http://static.blog.csdn.net/css/comment1.css" type="text/css" rel="stylesheet" />
+<link href="http://static.blog.csdn.net/css/style1.css" type="text/css" rel="stylesheet" />
+<script language='JavaScript' type='text/javascript' src='http://download.csdn.net/js/jquery.cookie.js'></script>
+<script type="text/javascript" src="http://csdnimg.cn/rabbit/search-service/main.js"></script>
+<div id="article_details" class="details">
+    <div class="article_title">   
+         <span class="ico ico_type_Original"></span>
+
+
+    <h1>
+        <span class="link_title"><a href="/quqi99/article/details/7334617">
+        ssh tunnel与从家中访问内网机器
+        </a></span>
+    </h1>
+</div>
+
+    <div class="article_manage">
+        <span class="link_categories">
+        分类：
+            <a href="/quqi99/article/category/674417" onclick="_gaq.push(['_trackEvent','function', 'onclick', 'blog_articles_fenlei']);">Linux / Unix / Shell</a> 
+        </span>
+    <span class="link_postdate">2012-03-08 22:27</span>
+    <span class="link_view" title="阅读次数">2746人阅读</span>
+    <span class="link_comments" title="评论次数"><a href="#comments" onclick="_gaq.push(['_trackEvent','function', 'onclick', 'blog_articles_pinglun'])">评论</a>(0)</span>
+    <span class="link_collect"><a href="javascript:void(0);" onclick="javascript:_gaq.push(['_trackEvent','function', 'onclick', 'blog_articles_shoucang']);collectArticle('ssh tunnel与从家中访问内网机器','7334617');return false;" title="收藏">收藏</a></span>
+    <span class="link_report"><a href="#report"  onclick="javascript:_gaq.push(['_trackEvent','function', 'onclick', 'blog_articles_jubao']);report(7334617,2);return false;" title="举报">举报</a></span>
+    
+</div>
+<div class="tag2box"><a href='http://www.csdn.net/tag/ssh' target=_blank onclick="_gaq.push(['_trackEvent','function', 'onclick', 'blog_articles_tag']);">ssh</a><a href='http://www.csdn.net/tag/server' target=_blank onclick="_gaq.push(['_trackEvent','function', 'onclick', 'blog_articles_tag']);">server</a><a href='http://www.csdn.net/tag/firefox' target=_blank onclick="_gaq.push(['_trackEvent','function', 'onclick', 'blog_articles_tag']);">firefox</a><a href='http://www.csdn.net/tag/socket' target=_blank onclick="_gaq.push(['_trackEvent','function', 'onclick', 'blog_articles_tag']);">socket</a><a href='http://www.csdn.net/tag/network' target=_blank onclick="_gaq.push(['_trackEvent','function', 'onclick', 'blog_articles_tag']);">network</a></div>
+
+  
+    
+<div id="article_content" class="article_content">
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;<span style="font-weight:bold">&nbsp; &nbsp;&nbsp; &nbsp; ssh tunnel与从家中访问公司内网机器</span><br /></p><p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br /></p><h6></h6><h2><span style="font-size:16px">作者：张华&nbsp; 发表于：2012-03-08<br />版权声明：可以任意转载，转载时请务必以超链接形式标明文章原始出处和作者信息及本版权声明</span></h2><h2><span style="font-size:16px">( http://blog.csdn.net/quqi99 )</span></h2><p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <br /></p><p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 假设有这样一个需求，需要从家中访问公司内网机器，可以用ssh遂道技术来作转发，遂道分正向遂道和反向遂道两种，如果数据流向与ssh的顺序（从 ssh client -&gt; ssh server )相同即为正向遂道（用－L标识），如果数据流向与&nbsp; ssh的顺序相反即为反向遂道。下面直接上两张图来说明：</p><p><img src="http://hi.csdn.net/attachment/201203/8/0_1331215101hp34.gif" alt="" style="width:500px; height:254px" /></p><p>上面第一张图是正向遂道，数据流向与ssh的顺序（指ssh client -&gt; ssh server)相同，即从192.168.1.1：80处监听到请求数据之后，通过ssh遂道，最后转发给了ssh server端6300端口去处理。</p><p>6300：192.168.1.1：80 都是前部分是ssh server, 后端分是ssh client<br /></p><p><br /></p><p><br /></p><p><img src="http://hi.csdn.net/attachment/201203/8/0_1331215117vwVo.gif" alt="" style="width:516px; height:309px" /></p><p>上面第二张图是反向遂道，数据流向与ssh的顺序(指ssh client -&gt; ssh server)相反，即从ssh server端的6300端口监听到数据之后，通过ssh遂道，最后转给了192.168.1.1：8080</p><p><br /></p><p>仔细想想上面两张图吧，下面直接上代码，从家中访问公司内网的机器，必须在公司有一台可以从家中访问得到的跳转机（例IP：10.10.10.10)，要访问的内网机IP为192.168.1.1 。<br /></p><p>1）如果用反向遂道实现的话，先修改ssh server的/etc/ssh/sshd_config中的GatewayPorts&nbsp; yes, 重启sshd,&nbsp; /etc/init.d/sshd restart<br />ssh -R 8422:192.168.1.1:8422 -R 61616:192.168.1.1:61616&nbsp; root@10.10.10.10 -g -N -C -o TCPKeepAlive=yes<br /></p><p>2) 如果用正向遂道的话，先修改ssh server的/etc/ssh/sshd_config中的AllowTcpForwarding true, 重启sshd,&nbsp; /etc/init.d/sshd restart<br />&nbsp;&nbsp;&nbsp; <span style="font-weight:bold">接着要 ssh 登录到跳转机上执行下列命令：</span><br />&nbsp;&nbsp; ssh -L 8422:localhost:8422 -L 61616:localhost:61616&nbsp; root@9.125.13.30 -g -N -C -o TCPKeepAlive=yes<br /></p><p>&nbsp;&nbsp; 如果报错“open failed: administratively prohibited: open failed”，那是因为上面的localhost处应该是ssh client的IP</p><p><br /></p><p><br /></p><p>example:</p><p>https://9.123.100.152:8422/ibm/console/login.do?action=secure<br />/etc/ssh/sshd_config中修改GatewayPorts no为GatewayPorts yes&nbsp; /etc/init.d/sshd restart<br />ssh -R 8422:9.125.13.30:8422 -R 61616:9.125.13.30:61616 -R 61617:9.125.13.30:61617 root@9.123.100.152 -g -N -C -o TCPKeepAlive=yes<br /><br />/etc/ssh/sshd_config, AllowTcpForwarding=true<br />open failed: administratively prohibited: open failed，如果出现这个错误是因为下面的没有用localhost<br />ssh -L 8422:localhost:8422 -L 61616:localhost:61616 -L 61617:localhost:61617 root@9.125.13.30 -g -N -C -o TCPKeepAlive=yes (需先登录到9.123.100.152这个跳转机上执行）</p><p><br /></p><p><strong>上述的缺点就是,为每个端口都得开一个tunnel，所以可以通过ssh命令 -D 的参数( [地址:]端口 )，含义是在某个本地地址的某个端口上开SOCKS服务进行监听，把这个端口的数据通信以加密形式转发到ssh的另一端</strong>。例如：我们翻墙的原理，要防墙必须国外有一台ssh server</p><p>1) 首先，通过 ssh -D 7070 root@yourForeignSSHhost 登录ssh</p><p>2）在firefox中设置使用socket v5的端口代理，端口为7070 (选项菜单里的“高级”选项卡的“Network&quot;子选项卡中设置Connection)<br /></p><p>3)&nbsp; 如何仍然有问题，可在firefox的地址栏输入about:config 配置使用远程DNS：network.proxy.socks_remote_dns=true</p><p>上面的翻墙有个缺点，就是你访问国内的网站它也会用代理，这样就慢啊，所以你也可用autoproxy插件选择仅在访问某些站点的使用指定代理，哪些不用代理</p><p>原理如下：比如firefox现在要访问www.163.com，firefox先将请求数据转给socket代理端口7070, 然后通过ssh遂道，最后由国外的ssh server主机去根据远程的DNS访问www.163.com</p><p><br /></p><p>但上述需要应用程序支持socket代理，但有的程序不支持怎么办，可以用透明tsocks, 它能让普通程序也走sock代理，在yum install tsocks安装后，修改配置文件/etc/tsocks.conf，可以在样本文件tsocks.conf.sample的基础上修改，通常只要配置server = 127.0.0.1即可，其他都可以默认。例如svn服务，再用ssh -D 1080 -f -N 用户名@公司服务器的公网地址 在本机的1080端口开启SOCKS服务；然后按照你平时使用svn的习惯，只是在命令前加上tsocks，类似这样: tsocks svn up 或者 tsocks svn ci -m 'aaaa' 等等即可。</p><p><br /></p><p><br /></p><p>如果是http代理，用squid，安装后修改配置<br /></p><p>sudo vim /etc/squid/squid.conf<br />http_access allow localnet<br />http_access allow all<br /><br /># And finally deny all other access to this proxy<br />#http_access deny all<br /><br /># Squid normally listens to port 3128<br />http_port 21</p><p><br />sudo service squid start<br /></p><p>使用时，</p><p>１）在shell中，导入http_proxy=http://&lt;httpproxyIP&gt;:21环境变量，然后wget www.g.cn<br />2）yum源中使用代理，vim /etc/yum.conf<br />&nbsp;&nbsp;&nbsp;&nbsp; proxy=http://&lt;httpproxyIP&gt;:21<br />&nbsp;&nbsp;&nbsp;&nbsp; 然后 sudo yum install git<br /></p><p><br /></p><p><br /></p><p>2014-08-05添加：</p><p>要实现ssh自动跳转非常简单，在 <span style="font-family:'Helvetica Neue', 'Lucida Grande', Helvetica, Arial, Verdana, sans-serif;color:#2d2d2d;font-size: 12.800000190734863px; font-style: normal; font-variant: normal; font-weight: normal; letter-spacing: normal; line-height: 15.600000381469727px; orphans: auto; text-align: left; text-indent: 0px; text-transform: none; white-space: normal; widows: auto; word-spacing: 0px; -webkit-text-stroke-width: 0px; background-color: rgb(255, 255, 255); display: inline !important; float: none;"><span>&nbsp;</span></span><em style="border: 0px; font-weight: normal; font-style: italic; font-size: 12.800000190734863px; font-family: 'Helvetica Neue', 'Lucida Grande', Helvetica, Arial, Verdana, sans-serif; vertical-align: baseline; margin: 0px; padding: 0px; background-color: rgb(255, 255, 204); color: rgb(45, 45, 45); font-variant: normal; letter-spacing: normal; line-height: 15.600000381469727px; orphans: auto; text-align: left; text-indent: 0px; text-transform: none; white-space: normal; widows: auto; word-spacing: 0px; -webkit-text-stroke-width: 0px; background-position: initial initial; background-repeat: initial initial;">~/.ssh/config</em><br /></p><p>Host server-*<br />&nbsp; &nbsp; User ubuntu<br />&nbsp; &nbsp; IdentityFile ~/.stack/myssh.key<br />&nbsp; &nbsp; ProxyCommand ssh hua@&lt;forward-machine&gt; nc -q0 %h.stack %p<br /></p><p><a target=_blank target="_blank" href="https://wiki.canonical.com/SSHebang" style="border-width: 0px 0px 1px; border-bottom-style: dotted; font-size: 12.800000190734863px; font-family: 'Helvetica Neue', 'Lucida Grande', Helvetica, Arial, Verdana, sans-serif; vertical-align: baseline; margin: 0px; padding: 0px; color: rgb(119, 41, 83); text-decoration: none; line-height: 15.600000381469727px;">SSHebang</a><span style="font-family:Helvetica Neue, Lucida Grande, Helvetica, Arial, Verdana, sans-serif;font-size:12px;color:#2d2d2d;"><span style="line-height: 15.600000381469727px;">就是一个这样自动分发如上配置的工具</span></span><br /></p>
+</div>
+
+
+
+
+<!-- Baidu Button BEGIN -->
+
+<div class="bdsharebuttonbox" style="float: right;">
+<a href="#" class="bds_more" data-cmd="more" style="background-position:0 0 !important; background-image: url(http://bdimg.share.baidu.com/static/api/img/share/icons_0_16.png?v=d754dcc0.png) !important"></a>
+<a href="#" class="bds_qzone" data-cmd="qzone" title="分享到QQ空间"  style="background-position:0 -52px !important"></a>
+<a href="#" class="bds_tsina" data-cmd="tsina" title="分享到新浪微博"style="background-position:0 -104px !important"></a>
+<a href="#" class="bds_tqq" data-cmd="tqq" title="分享到腾讯微博"style="background-position:0 -260px !important"></a>
+<a href="#" class="bds_renren" data-cmd="renren" title="分享到人人网"style="background-position:0 -208px !important"></a>
+<a href="#" class="bds_weixin" data-cmd="weixin" title="分享到微信"style="background-position:0 -1612px !important" ></a>
+</div>
+<script>window._bd_share_config = { "common": { "bdSnsKey": {}, "bdText": "", "bdMini": "1", "bdMiniList": false, "bdPic": "", "bdStyle": "0", "bdSize": "16" }, "share": {} }; with (document) 0[(getElementsByTagName('head')[0] || body).appendChild(createElement('script')).src = 'http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion=' + ~(-new Date() / 36e5)];</script>
+<!-- Baidu Button END -->
+
+<!--192.168.100.35-->
+<ul class="article_next_prev">
+            <li class="prev_article"><span  onclick="_gaq.push(['_trackEvent','function', 'onclick', 'blog_articles_shangyipian']);location.href='/quqi99/article/details/7275485';">上一篇</span><a href="/quqi99/article/details/7275485" onclick="_gaq.push(['_trackEvent','function', 'onclick', 'blog_articles_shangyipian'])">Bookmarks</a></li>
+            <li class="next_article"><span onclick="_gaq.push(['_trackEvent','function', 'onclick', 'blog_articles_xiayipian']);location.href='/quqi99/article/details/7411091';">下一篇</span><a href="/quqi99/article/details/7411091" onclick="_gaq.push(['_trackEvent','function', 'onclick', 'blog_articles_xiayipian'])">Fedora 16上源码建立pydev + eclipse的OpenStack开发环境笔记草稿 ( by quqi99 )</a></li>
+</ul>
+
+<!-- Baidu Button BEGIN -->
+<script type="text/javascript" id="bdshare_js" data="type=tools&amp;uid=1536434" ></script>
+<script type="text/javascript" id="bdshell_js"></script>
+<script type="text/javascript">
+    document.getElementById("bdshell_js").src = "http://bdimg.share.baidu.com/static/js/shell_v2.js?cdnversion=" + Math.ceil(new Date()/3600000)
+</script>
+<!-- Baidu Button END -->
+
+
+</div>
+      <dl class="blog-associat-tag">
+        <dt>主题推荐</dt>
+        <dd>
+                <a href="http://www.csdn.net/tag/ssh" target="_blank" class="blog-tage-red" >ssh</a> 
+                <a href="http://www.csdn.net/tag/应用程序" target="_blank" class="blog-tage-red" >应用程序</a> 
+                <a href="http://www.csdn.net/tag/服务器" target="_blank" class="blog-tage-red" >服务器</a> 
+                <a href="http://www.csdn.net/tag/webkit" target="_blank" class="blog-tage-red" >webkit</a> 
+                <a href="http://www.csdn.net/tag/版权" target="_blank" class="blog-tage-red" >版权</a> 
+        </dd>
+    </dl> 
+
+
+<dl class="blog-ass-articl tracking-ad"  data-mod="popu_36" id="res-relatived"> 
+     <dt><span>猜你在找</span></dt>    
+</dl>
+
+<script type="text/javascript">
+    var searchtitletags = 'ssh tunnel与从家中访问内网机器' + ',' + 'ssh,应用程序,服务器,webkit,版权';
+    searchService({
+        index: 'blog',
+        query: searchtitletags,
+        from: 10,
+        size: 10,
+        appendTo: '#res-relatived',
+        url: 'recommend',
+        his: 2,
+        client: "blog_cf_enhance",
+        tmpl: '<dd style="background:url(http://static.blog.csdn.net/skin/default/images/blog-dot-red3.gif) no-repeat 0 10px;"><a href="#{ url }" title="#{ title }" strategy="#{ strategy }">#{ title }</a></dd>'
+    });
+
+ </script>   
+
+
+    <div id="ad_cen">
+   
+          <script type="text/javascript">
+              new Ad(4, 'ad_cen');
+          </script>
+    </div>
+<div class="comment_class">
+    <div id="comment_title" class="panel_head">
+        <span class="see_comment">查看评论</span><a name="comments"></a></div>
+    <div id="comment_list">
+    </div>
+    <div id="comment_bar">
+    </div>
+    <div id="comment_form">
+    </div>
+
+    <div class="announce">
+        * 以上用户言论只代表其个人观点，不代表CSDN网站的观点或立场<a name="reply"></a><a name="quote"></a></div>
+</div>
+
+<script type="text/javascript">
+    var fileName = '7334617';
+    var commentscount = 0;
+    var islock = false
+</script>
+<script type="text/javascript" src="http://static.blog.csdn.net/scripts/comment.js"></script>
+    <div id="ad_bot">
+    </div>
+    <script type="text/javascript">
+    new Ad(5, 'ad_bot');
+    </script>
+<div id="report_dialog">
+</div>
+
+<div id="d-top"  style="bottom:60px;">
+        <a id="quick-reply" class="btn btn-top q-reply" title="快速回复" style="display:none;">
+            <img src="http://static.blog.csdn.net/images/blog-icon-reply.png" alt="快速回复">
+        </a>    
+
+    <a id="d-top-a" class="btn btn-top backtop"  style="display: none;" title="返回顶部" onclick="_gaq.push(['_trackEvent','function', 'onclick', 'blog_articles_huidaodingbu'])" style="">         
+         <img src="http://static.blog.csdn.net/images/top.png" alt="TOP">
+    </a>
+</div>
+<script type="text/javascript">
+    $(function ()
+    {
+        $("#ad_frm_0").height("90px");
+        
+        setTimeout(function(){
+            $("#ad_frm_2").height("200px");
+        },1000);
+        
+
+        if($("#comment_content").length>0)
+        {
+            $("#quick-reply").show();
+
+            $("#quick-reply").click(function(){
+                setEditorFocus();
+            });
+        }       
+     
+        var d_top = $('#d-top-a');
+        document.onscroll = function ()
+        {
+            var scrTop = (document.body.scrollTop || document.documentElement.scrollTop);
+            if (scrTop > 500)
+            {
+                d_top.show();
+            } else
+            {
+                d_top.hide();
+            }
+        }
+        $('#d-top-a').click(function ()
+        {
+            scrollTo(0, 0);
+            this.blur();
+            return false;
+        });
+    });
+  
+</script>
+<style type="text/css">
+    .tag_list
+    {
+        background: none repeat scroll 0 0 #FFFFFF;
+        border: 1px solid #D7CBC1;
+        color: #000000;
+        font-size: 12px;
+        line-height: 20px;
+        list-style: none outside none;
+        margin: 10px 2% 0 1%;
+        padding: 1px;
+    }
+    .tag_list h5
+    {
+        background: none repeat scroll 0 0 #E0DBD3;
+        color: #47381C;
+        font-size: 12px;
+        height: 24px;
+        line-height: 24px;
+        padding: 0 5px;
+        margin: 0;
+    }
+    .tag_list h5 a
+    {
+        color: #47381C;
+    }
+    .classify
+    {
+        margin: 10px 0;
+        padding: 4px 12px 8px;
+    }
+    .classify a
+    {
+        margin-right: 20px;
+        white-space: nowrap;
+    }
+</style>
+<div class="tag_list">
+    <h5>
+        <a href="http://www.csdn.net/tag/" target="_blank">核心技术类目</a></h5>
+    <div class="classify">
+<a title="全部主题" href="http://www.csdn.net/tag" target="_blank" onclick="LogClickCount(this,336);">全部主题</a>
+<a title="Hadoop" href="http://g.csdn.net/5272865" target="_blank" onclick="LogClickCount(this,336);">Hadoop</a>
+<a title="AWS" href="http://g.csdn.net/5272866" target="_blank" onclick="LogClickCount(this,336);">AWS</a>
+<a title="移动游戏" href="http://g.csdn.net/5272870" target="_blank" onclick="LogClickCount(this,336);">移动游戏</a>
+<a title="Java" href="http://g.csdn.net/5272871" target="_blank" onclick="LogClickCount(this,336);">Java</a>
+<a title="Android" href="http://g.csdn.net/5272872" target="_blank" onclick="LogClickCount(this,336);">Android</a>
+<a title="iOS" href="http://g.csdn.net/5272873" target="_blank" onclick="LogClickCount(this,336);">iOS</a>
+<a title="Swift" href="http://g.csdn.net/5272868" target="_blank" onclick="LogClickCount(this,336);">Swift</a>
+<a title="智能硬件" href="http://g.csdn.net/5272869" target="_blank" onclick="LogClickCount(this,336);">智能硬件</a>
+<a title="Docker" href="http://g.csdn.net/5272867" target="_blank" onclick="LogClickCount(this,336);">Docker</a>
+<a title="OpenStack" href="http://g.csdn.net/5272925" target="_blank" onclick="LogClickCount(this,336);">OpenStack</a>
+<a title="VPN" href="http://www.csdn.net/tag/vpn" target="_blank" onclick="LogClickCount(this,336);">VPN</a>
+<a title="Spark" href="http://g.csdn.net/5272924" target="_blank" onclick="LogClickCount(this,336);">Spark</a>
+<a title="ERP" href="http://www.csdn.net/tag/erp" target="_blank" onclick="LogClickCount(this,336);">ERP</a>
+<a title="IE10" href="http://www.csdn.net/tag/ie10" target="_blank" onclick="LogClickCount(this,336);">IE10</a>
+<a title="Eclipse" href="http://www.csdn.net/tag/eclipse" target="_blank" onclick="LogClickCount(this,336);">Eclipse</a>
+<a title="CRM" href="http://www.csdn.net/tag/crm" target="_blank" onclick="LogClickCount(this,336);">CRM</a>
+<a title="JavaScript" href="http://www.csdn.net/tag/javascript" target="_blank" onclick="LogClickCount(this,336);">JavaScript</a>
+<a title="数据库" href="http://www.csdn.net/tag/数据库" target="_blank" onclick="LogClickCount(this,336);">数据库</a>
+<a title="Ubuntu" href="http://www.csdn.net/tag/ubuntu" target="_blank" onclick="LogClickCount(this,336);">Ubuntu</a>
+<a title="NFC" href="http://www.csdn.net/tag/nfc" target="_blank" onclick="LogClickCount(this,336);">NFC</a>
+<a title="WAP" href="http://www.csdn.net/tag/wap" target="_blank" onclick="LogClickCount(this,336);">WAP</a>
+<a title="jQuery" href="http://www.csdn.net/tag/jquery" target="_blank" onclick="LogClickCount(this,336);">jQuery</a>
+<a title="BI" href="http://www.csdn.net/tag/bi" target="_blank" onclick="LogClickCount(this,336);">BI</a>
+<a title="HTML5" href="http://www.csdn.net/tag/html5" target="_blank" onclick="LogClickCount(this,336);">HTML5</a>
+<a title="Spring" href="http://www.csdn.net/tag/spring" target="_blank" onclick="LogClickCount(this,336);">Spring</a>
+<a title="Apache" href="http://www.csdn.net/tag/apache" target="_blank" onclick="LogClickCount(this,336);">Apache</a>
+<a title=".NET" href="http://www.csdn.net/tag/.net" target="_blank" onclick="LogClickCount(this,336);">.NET</a>
+<a title="API" href="http://www.csdn.net/tag/api" target="_blank" onclick="LogClickCount(this,336);">API</a>
+<a title="HTML" href="http://www.csdn.net/tag/html" target="_blank" onclick="LogClickCount(this,336);">HTML</a>
+<a title="SDK" href="http://www.csdn.net/tag/sdk" target="_blank" onclick="LogClickCount(this,336);">SDK</a>
+<a title="IIS" href="http://www.csdn.net/tag/iis" target="_blank" onclick="LogClickCount(this,336);">IIS</a>
+<a title="Fedora" href="http://www.csdn.net/tag/fedora" target="_blank" onclick="LogClickCount(this,336);">Fedora</a>
+<a title="XML" href="http://www.csdn.net/tag/xml" target="_blank" onclick="LogClickCount(this,336);">XML</a>
+<a title="LBS" href="http://www.csdn.net/tag/lbs" target="_blank" onclick="LogClickCount(this,336);">LBS</a>
+<a title="Unity" href="http://www.csdn.net/tag/unity" target="_blank" onclick="LogClickCount(this,336);">Unity</a>
+<a title="Splashtop" href="http://www.csdn.net/tag/splashtop" target="_blank" onclick="LogClickCount(this,336);">Splashtop</a>
+<a title="UML" href="http://www.csdn.net/tag/uml" target="_blank" onclick="LogClickCount(this,336);">UML</a>
+<a title="components" href="http://www.csdn.net/tag/components" target="_blank" onclick="LogClickCount(this,336);">components</a>
+<a title="Windows Mobile" href="http://www.csdn.net/tag/windowsmobile" target="_blank" onclick="LogClickCount(this,336);">Windows Mobile</a>
+<a title="Rails" href="http://www.csdn.net/tag/rails" target="_blank" onclick="LogClickCount(this,336);">Rails</a>
+<a title="QEMU" href="http://www.csdn.net/tag/qemu" target="_blank" onclick="LogClickCount(this,336);">QEMU</a>
+<a title="KDE" href="http://www.csdn.net/tag/kde" target="_blank" onclick="LogClickCount(this,336);">KDE</a>
+<a title="Cassandra" href="http://www.csdn.net/tag/cassandra" target="_blank" onclick="LogClickCount(this,336);">Cassandra</a>
+<a title="CloudStack" href="http://www.csdn.net/tag/cloudstack" target="_blank" onclick="LogClickCount(this,336);">CloudStack</a>
+<a title="FTC" href="http://www.csdn.net/tag/ftc" target="_blank" onclick="LogClickCount(this,336);">FTC</a>
+<a title="coremail" href="http://www.csdn.net/tag/coremail" target="_blank" onclick="LogClickCount(this,336);">coremail</a>
+<a title="OPhone " href="http://www.csdn.net/tag/ophone " target="_blank" onclick="LogClickCount(this,336);">OPhone </a>
+<a title="CouchBase" href="http://www.csdn.net/tag/couchbase" target="_blank" onclick="LogClickCount(this,336);">CouchBase</a>
+<a title="云计算" href="http://www.csdn.net/tag/云计算" target="_blank" onclick="LogClickCount(this,336);">云计算</a>
+<a title="iOS6" href="http://www.csdn.net/tag/iOS6" target="_blank" onclick="LogClickCount(this,336);">iOS6</a>
+<a title="Rackspace " href="http://www.csdn.net/tag/rackspace " target="_blank" onclick="LogClickCount(this,336);">Rackspace </a>
+<a title="Web App" href="http://www.csdn.net/tag/webapp" target="_blank" onclick="LogClickCount(this,336);">Web App</a>
+<a title="SpringSide" href="http://www.csdn.net/tag/springside" target="_blank" onclick="LogClickCount(this,336);">SpringSide</a>
+<a title="Maemo" href="http://www.csdn.net/tag/maemo" target="_blank" onclick="LogClickCount(this,336);">Maemo</a>
+<a title="Compuware" href="http://www.csdn.net/tag/compuware" target="_blank" onclick="LogClickCount(this,336);">Compuware</a>
+<a title="大数据" href="http://www.csdn.net/tag/大数据" target="_blank" onclick="LogClickCount(this,336);">大数据</a>
+<a title="aptech" href="http://www.csdn.net/tag/aptech" target="_blank" onclick="LogClickCount(this,336);">aptech</a>
+<a title="Perl" href="http://www.csdn.net/tag/perl" target="_blank" onclick="LogClickCount(this,336);">Perl</a>
+<a title="Tornado" href="http://www.csdn.net/tag/tornado" target="_blank" onclick="LogClickCount(this,336);">Tornado</a>
+<a title="Ruby" href="http://www.csdn.net/tag/ruby" target="_blank" onclick="LogClickCount(this,336);">Ruby</a>
+<a title="Hibernate" href="http://www.csdn.net/hibernate" target="_blank" onclick="LogClickCount(this,336);">Hibernate</a>
+<a title="ThinkPHP" href="http://www.csdn.net/tag/thinkphp" target="_blank" onclick="LogClickCount(this,336);">ThinkPHP</a>
+<a title="HBase" href="http://www.csdn.net/tag/hbase" target="_blank" onclick="LogClickCount(this,336);">HBase</a>
+<a title="Pure" href="http://www.csdn.net/tag/pure" target="_blank" onclick="LogClickCount(this,336);">Pure</a>
+<a title="Solr" href="http://www.csdn.net/tag/solr" target="_blank" onclick="LogClickCount(this,336);">Solr</a>
+<a title="Angular" href="http://www.csdn.net/tag/angular" target="_blank" onclick="LogClickCount(this,336);">Angular</a>
+<a title="Cloud Foundry" href="http://www.csdn.net/tag/cloudfoundry" target="_blank" onclick="LogClickCount(this,336);">Cloud Foundry</a>
+<a title="Redis" href="http://www.csdn.net/tag/redis" target="_blank" onclick="LogClickCount(this,336);">Redis</a>
+<a title="Scala" href="http://www.csdn.net/tag/scala" target="_blank" onclick="LogClickCount(this,336);">Scala</a>
+<a title="Django" href="http://www.csdn.net/tag/django" target="_blank" onclick="LogClickCount(this,336);">Django</a>
+<a title="Bootstrap" href="http://www.csdn.net/tag/bootstrap" target="_blank" onclick="LogClickCount(this,336);">Bootstrap</a>
+    </div>
+</div>
+
+
+                        <div class="clear">
+                        </div>
+                    </div>                   
+                
+            </div>
+            <div id="side">
+    <div class="side">
+<div id="panel_Profile" class="panel">
+<ul class="panel_head"><span>个人资料</span></ul>
+<ul class="panel_body profile">
+<div id="blog_userface">
+    <a href="http://my.csdn.net/quqi99" target="_blank">
+    <img src="http://avatar.csdn.net/7/3/0/1_quqi99.jpg" title="访问我的空间" style="max-width:90%"/>
+    </a>
+    <br />
+    <span><a href="http://my.csdn.net/quqi99" class="user_name" target="_blank">quqi99</a></span>
+</div>
+<div class="interact">
+<a href="javascript:void(0);" class="attent" id="span_add_follow" title="[加关注]" onclick="_gaq.push(['_trackEvent','function', 'onclick', 'blog_articles_guanzhu'])"></a>
+
+ <a href="javascript:void(0);" class="letter"  title="[发私信]" onclick="window.open('http://msg.csdn.net/letters/model?receiver=quqi99','_blank','height=350,width=700');_gaq.push(['_trackEvent','function', 'onclick', 'blog_articles_sixin'])"></a>  
+</div>
+<div id="blog_medal">
+                       <div class="ico_expert" title="CSDN认证专家" style="width:54px;height:60px;background:url('http://csdnimg.cn/jifen/images/xunzhang/xunzhang/bokezhuanjiamiddle.png') no-repeat" ></div>
+                <div id="bms_box">
+               </div>
+</div>
+<ul id="blog_rank">
+    <li>访问：<span>408277次</span></li>
+    <li>积分：<span>5957</span> </li>    
+    <li >等级： <span style="position:relative;display:inline-block;z-index:1" >
+            <img src="http://csdnimg.cn/jifen/images/xunzhang/jianzhang/blog6.png" alt="" style="vertical-align: middle;" id="leveImg">
+            <div id="smallTittle" style=" position: absolute;  left: -24px;  top: 25px;  text-align: center;  width: 101px;  height: 32px;  background-color: #fff;  line-height: 32px;  border: 2px #DDDDDD solid;  box-shadow: 0px 2px 2px rgba (0,0,0,0.1);  display: none;   z-index: 999;">
+            <div style="left: 42%;  top: -8px;  position: absolute;  width: 0;  height: 0;  border-left: 10px solid transparent;  border-right: 10px solid transparent;  border-bottom: 8px solid #EAEAEA;"></div>
+            积分：5957 </div>
+        </span>  </li>
+    <li>排名：<span>第1183名</span></li>
+</ul>
+<ul id="blog_statistics">
+    <li>原创：<span>192篇</span></li>
+    <li>转载：<span>11篇</span></li>
+    <li>译文：<span>0篇</span></li>
+    <li>评论：<span>217条</span></li>
+</ul>
+</ul>
+</div>
+
+
+<div class="panel" id="panel_Search">
+    <ul class="panel_head"><span>文章搜索</span></ul>
+    <ul class="panel_body">
+        <form id="frmSearch" action="http://so.csdn.net/search" class="form_search" target="_blank">
+        <span><input id="inputSearch" type="text" class="blogsearch" title="请输入关键字" /></span>
+        <input id="btnSubmit" type="button" value="搜索" title="search in blog" />
+        <input type="hidden" name="q" id="inputQ" />
+        <input type="hidden" name="t" value="blog" />
+        <a id="btnSearchBlog" target="_blank"></a>
+        </form>
+    </ul>
+</div>
+
+<script type="text/javascript">
+    $(function () {
+        $("#btnSubmit").click(function () {           
+            search();
+        });
+
+        $("#frmSearch").submit(function () {
+            search();
+            return false;
+        });
+
+        function search()
+        {
+            var url = "http://so.csdn.net/so/search/s.do?q=" + encodeURIComponent($("#inputSearch").val()) + "&u=" + username + "&t=blog";
+            window.location.href = url;
+        }   
+    });
+</script>
+<div id="panel_Category" class="panel">
+<ul class="panel_head"><span>文章分类</span></ul>
+<ul class="panel_body">
+             <li>
+                <a href="http://blog.csdn.net/quqi99/article/category/875141" onclick="_gaq.push(['_trackEvent','function', 'onclick', 'blog_articles_wenzhangfenlei']); ">VM / Cloud</a><span>(1)</span>
+            </li>
+             <li>
+                <a href="http://blog.csdn.net/quqi99/article/category/557281" onclick="_gaq.push(['_trackEvent','function', 'onclick', 'blog_articles_wenzhangfenlei']); ">Middleware / Java AppServer</a><span>(11)</span>
+            </li>
+             <li>
+                <a href="http://blog.csdn.net/quqi99/article/category/328029" onclick="_gaq.push(['_trackEvent','function', 'onclick', 'blog_articles_wenzhangfenlei']); ">Seach Engine</a><span>(5)</span>
+            </li>
+             <li>
+                <a href="http://blog.csdn.net/quqi99/article/category/674417" onclick="_gaq.push(['_trackEvent','function', 'onclick', 'blog_articles_wenzhangfenlei']); ">Linux / Unix / Shell</a><span>(32)</span>
+            </li>
+             <li>
+                <a href="http://blog.csdn.net/quqi99/article/category/328188" onclick="_gaq.push(['_trackEvent','function', 'onclick', 'blog_articles_wenzhangfenlei']); ">J2SE / JEE</a><span>(40)</span>
+            </li>
+             <li>
+                <a href="http://blog.csdn.net/quqi99/article/category/347580" onclick="_gaq.push(['_trackEvent','function', 'onclick', 'blog_articles_wenzhangfenlei']); ">DB / NoSQL</a><span>(9)</span>
+            </li>
+             <li>
+                <a href="http://blog.csdn.net/quqi99/article/category/803236" onclick="_gaq.push(['_trackEvent','function', 'onclick', 'blog_articles_wenzhangfenlei']); ">Architecture</a><span>(0)</span>
+            </li>
+             <li>
+                <a href="http://blog.csdn.net/quqi99/article/category/351802" onclick="_gaq.push(['_trackEvent','function', 'onclick', 'blog_articles_wenzhangfenlei']); ">Android</a><span>(4)</span>
+            </li>
+             <li>
+                <a href="http://blog.csdn.net/quqi99/article/category/803239" onclick="_gaq.push(['_trackEvent','function', 'onclick', 'blog_articles_wenzhangfenlei']); ">Life</a><span>(7)</span>
+            </li>
+             <li>
+                <a href="http://blog.csdn.net/quqi99/article/category/689016" onclick="_gaq.push(['_trackEvent','function', 'onclick', 'blog_articles_wenzhangfenlei']); ">Other</a><span>(11)</span>
+            </li>
+             <li>
+                <a href="http://blog.csdn.net/quqi99/article/category/1112756" onclick="_gaq.push(['_trackEvent','function', 'onclick', 'blog_articles_wenzhangfenlei']); ">OpenStack</a><span>(73)</span>
+            </li>
+             <li>
+                <a href="http://blog.csdn.net/quqi99/article/category/1139084" onclick="_gaq.push(['_trackEvent','function', 'onclick', 'blog_articles_wenzhangfenlei']); ">Python</a><span>(2)</span>
+            </li>
+             <li>
+                <a href="http://blog.csdn.net/quqi99/article/category/1167554" onclick="_gaq.push(['_trackEvent','function', 'onclick', 'blog_articles_wenzhangfenlei']); ">C / C++</a><span>(2)</span>
+            </li>
+             <li>
+                <a href="http://blog.csdn.net/quqi99/article/category/1490633" onclick="_gaq.push(['_trackEvent','function', 'onclick', 'blog_articles_wenzhangfenlei']); ">Networking</a><span>(3)</span>
+            </li>
+</ul>
+</div><div id="panel_Archive" class="panel">
+<ul class="panel_head"><span>文章存档</span></ul>
+<ul class="panel_body">
+<div id="archive_list">
+<!--归档统计-->
+<li><a href="http://blog.csdn.net/quqi99/article/month/2014/09">2014年09月</a><span>(2)</span></li><li><a href="http://blog.csdn.net/quqi99/article/month/2014/08">2014年08月</a><span>(2)</span></li><li><a href="http://blog.csdn.net/quqi99/article/month/2014/07">2014年07月</a><span>(5)</span></li><li><a href="http://blog.csdn.net/quqi99/article/month/2014/06">2014年06月</a><span>(3)</span></li><li><a href="http://blog.csdn.net/quqi99/article/month/2014/05">2014年05月</a><span>(7)</span></li><li><a href="http://blog.csdn.net/quqi99/article/month/2014/04">2014年04月</a><span>(2)</span></li><li><a href="http://blog.csdn.net/quqi99/article/month/2014/03">2014年03月</a><span>(6)</span></li><li><a href="http://blog.csdn.net/quqi99/article/month/2014/02">2014年02月</a><span>(1)</span></li><li><a href="http://blog.csdn.net/quqi99/article/month/2014/01">2014年01月</a><span>(7)</span></li><li><a href="http://blog.csdn.net/quqi99/article/month/2013/12">2013年12月</a><span>(7)</span></li><li><a href="http://blog.csdn.net/quqi99/article/month/2013/11">2013年11月</a><span>(1)</span></li><li><a href="http://blog.csdn.net/quqi99/article/month/2013/10">2013年10月</a><span>(3)</span></li><li><a href="http://blog.csdn.net/quqi99/article/month/2013/09">2013年09月</a><span>(8)</span></li><li><a href="http://blog.csdn.net/quqi99/article/month/2013/08">2013年08月</a><span>(7)</span></li><li><a href="http://blog.csdn.net/quqi99/article/month/2013/07">2013年07月</a><span>(13)</span></li><li><a href="http://blog.csdn.net/quqi99/article/month/2013/06">2013年06月</a><span>(6)</span></li><li><a href="http://blog.csdn.net/quqi99/article/month/2013/05">2013年05月</a><span>(1)</span></li><li><a href="http://blog.csdn.net/quqi99/article/month/2013/04">2013年04月</a><span>(2)</span></li><li><a href="http://blog.csdn.net/quqi99/article/month/2013/03">2013年03月</a><span>(3)</span></li><li><a href="http://blog.csdn.net/quqi99/article/month/2013/02">2013年02月</a><span>(1)</span></li><li><a href="http://blog.csdn.net/quqi99/article/month/2013/01">2013年01月</a><span>(9)</span></li><li><a href="http://blog.csdn.net/quqi99/article/month/2012/12">2012年12月</a><span>(3)</span></li><li><a href="http://blog.csdn.net/quqi99/article/month/2012/11">2012年11月</a><span>(2)</span></li><li><a href="http://blog.csdn.net/quqi99/article/month/2012/08">2012年08月</a><span>(1)</span></li><li><a href="http://blog.csdn.net/quqi99/article/month/2012/07">2012年07月</a><span>(1)</span></li><li><a href="http://blog.csdn.net/quqi99/article/month/2012/06">2012年06月</a><span>(7)</span></li><li><a href="http://blog.csdn.net/quqi99/article/month/2012/05">2012年05月</a><span>(2)</span></li><li><a href="http://blog.csdn.net/quqi99/article/month/2012/04">2012年04月</a><span>(6)</span></li><li><a href="http://blog.csdn.net/quqi99/article/month/2012/03">2012年03月</a><span>(2)</span></li><li><a href="http://blog.csdn.net/quqi99/article/month/2012/02">2012年02月</a><span>(1)</span></li><li><a href="http://blog.csdn.net/quqi99/article/month/2011/12">2011年12月</a><span>(1)</span></li><li><a href="http://blog.csdn.net/quqi99/article/month/2011/06">2011年06月</a><span>(2)</span></li><li><a href="http://blog.csdn.net/quqi99/article/month/2011/04">2011年04月</a><span>(5)</span></li><li><a href="http://blog.csdn.net/quqi99/article/month/2011/03">2011年03月</a><span>(2)</span></li><li><a href="http://blog.csdn.net/quqi99/article/month/2011/01">2011年01月</a><span>(4)</span></li><li><a href="http://blog.csdn.net/quqi99/article/month/2010/12">2010年12月</a><span>(1)</span></li><li><a href="http://blog.csdn.net/quqi99/article/month/2010/07">2010年07月</a><span>(1)</span></li><li><a href="http://blog.csdn.net/quqi99/article/month/2010/05">2010年05月</a><span>(1)</span></li><li><a href="http://blog.csdn.net/quqi99/article/month/2010/04">2010年04月</a><span>(2)</span></li><li><a href="http://blog.csdn.net/quqi99/article/month/2010/03">2010年03月</a><span>(2)</span></li><li><a href="http://blog.csdn.net/quqi99/article/month/2010/02">2010年02月</a><span>(4)</span></li><li><a href="http://blog.csdn.net/quqi99/article/month/2010/01">2010年01月</a><span>(5)</span></li><li><a href="http://blog.csdn.net/quqi99/article/month/2009/12">2009年12月</a><span>(5)</span></li><li><a href="http://blog.csdn.net/quqi99/article/month/2009/11">2009年11月</a><span>(5)</span></li><li><a href="http://blog.csdn.net/quqi99/article/month/2009/10">2009年10月</a><span>(6)</span></li><li><a href="http://blog.csdn.net/quqi99/article/month/2009/09">2009年09月</a><span>(1)</span></li><li><a href="http://blog.csdn.net/quqi99/article/month/2009/08">2009年08月</a><span>(1)</span></li><li><a href="http://blog.csdn.net/quqi99/article/month/2009/06">2009年06月</a><span>(4)</span></li><li><a href="http://blog.csdn.net/quqi99/article/month/2009/03">2009年03月</a><span>(1)</span></li><li><a href="http://blog.csdn.net/quqi99/article/month/2008/11">2008年11月</a><span>(1)</span></li><li><a href="http://blog.csdn.net/quqi99/article/month/2008/10">2008年10月</a><span>(2)</span></li><li><a href="http://blog.csdn.net/quqi99/article/month/2008/08">2008年08月</a><span>(1)</span></li><li><a href="http://blog.csdn.net/quqi99/article/month/2008/06">2008年06月</a><span>(3)</span></li><li><a href="http://blog.csdn.net/quqi99/article/month/2008/04">2008年04月</a><span>(1)</span></li><li><a href="http://blog.csdn.net/quqi99/article/month/2008/03">2008年03月</a><span>(1)</span></li><li><a href="http://blog.csdn.net/quqi99/article/month/2008/02">2008年02月</a><span>(1)</span></li><li><a href="http://blog.csdn.net/quqi99/article/month/2008/01">2008年01月</a><span>(3)</span></li><li><a href="http://blog.csdn.net/quqi99/article/month/2007/12">2007年12月</a><span>(4)</span></li><li><a href="http://blog.csdn.net/quqi99/article/month/2007/11">2007年11月</a><span>(1)</span></li><li><a href="http://blog.csdn.net/quqi99/article/month/2007/10">2007年10月</a><span>(4)</span></li><li><a href="http://blog.csdn.net/quqi99/article/month/2007/08">2007年08月</a><span>(4)</span></li><li><a href="http://blog.csdn.net/quqi99/article/month/2007/07">2007年07月</a><span>(4)</span></li><li><a href="http://blog.csdn.net/quqi99/article/month/2007/05">2007年05月</a><span>(8)</span></li>
+</div>
+</ul>
+</div>
+<div id="hotarticls" class="panel">
+<ul class="panel_head">
+    <span>       
+阅读排行    </span>
+</ul>
+
+<ul class="panel_body itemlist">
+<li>
+<a href="/quqi99/article/details/1916553" title="Android学习笔记 ( by quqi99 )">Android学习笔记 ( by quqi99 )</a><span>(25789)</span>
+</li>
+<li>
+<a href="/quqi99/article/details/1680647" title="java.lang.NoClassDefFoundError: org/apache/commons/io/output/DeferredFileOutputStream">java.lang.NoClassDefFoundError: org/apache/commons/io/output/DeferredFileOutputStream</a><span>(19534)</span>
+</li>
+<li>
+<a href="/quqi99/article/details/9156497" title="OpenDaylight学习 ( by quqi99 )">OpenDaylight学习 ( by quqi99 )</a><span>(11222)</span>
+</li>
+<li>
+<a href="/quqi99/article/details/7433285" title="建立openstack quantum开发环境">建立openstack quantum开发环境</a><span>(10266)</span>
+</li>
+<li>
+<a href="/quqi99/article/details/5604732" title="个人户口档案转移笔记（适用北京集体户口）">个人户口档案转移笔记（适用北京集体户口）</a><span>(7054)</span>
+</li>
+<li>
+<a href="/quqi99/article/details/1930304" title="Android手机客户端与Servlet交换数据(by quqi99)">Android手机客户端与Servlet交换数据(by quqi99)</a><span>(6426)</span>
+</li>
+<li>
+<a href="/quqi99/article/details/6129755" title="用java模拟curl利用cookie登录抓取一个受密码保护的新页面 ( by quqi99 )">用java模拟curl利用cookie登录抓取一个受密码保护的新页面 ( by quqi99 )</a><span>(6191)</span>
+</li>
+<li>
+<a href="/quqi99/article/details/12030851" title="如何学习OpenStack与精通OpenStack好书推荐 ( by quqi99 )">如何学习OpenStack与精通OpenStack好书推荐 ( by quqi99 )</a><span>(6180)</span>
+</li>
+<li>
+<a href="/quqi99/article/details/5298017" title="ReentrantLock与synchronized的区别 ( by quqi99 )">ReentrantLock与synchronized的区别 ( by quqi99 )</a><span>(6074)</span>
+</li>
+<li>
+<a href="/quqi99/article/details/1624225" title="Magnolia学习笔记（一个基于JSR170的内容管理系统） ( by quqi99 )">Magnolia学习笔记（一个基于JSR170的内容管理系统） ( by quqi99 )</a><span>(5960)</span>
+</li>
+</ul>
+</div>
+<div id="hotarticls2" class="panel">
+<ul class="panel_head"><span>评论排行</span></ul>
+<ul class="panel_body itemlist">
+<li>
+<a href="/quqi99/article/details/1916553" title="Android学习笔记 ( by quqi99 )">Android学习笔记 ( by quqi99 )</a><span>(21)</span>
+</li>
+<li>
+<a href="/quqi99/article/details/17144869" title="Android 4.2系统的手机使用LEAP企业Wifi网络 ( by quqi99 )">Android 4.2系统的手机使用LEAP企业Wifi网络 ( by quqi99 )</a><span>(19)</span>
+</li>
+<li>
+<a href="/quqi99/article/details/1680647" title="java.lang.NoClassDefFoundError: org/apache/commons/io/output/DeferredFileOutputStream">java.lang.NoClassDefFoundError: org/apache/commons/io/output/DeferredFileOutputStream</a><span>(18)</span>
+</li>
+<li>
+<a href="/quqi99/article/details/9156497" title="OpenDaylight学习 ( by quqi99 )">OpenDaylight学习 ( by quqi99 )</a><span>(15)</span>
+</li>
+<li>
+<a href="/quqi99/article/details/1930304" title="Android手机客户端与Servlet交换数据(by quqi99)">Android手机客户端与Servlet交换数据(by quqi99)</a><span>(14)</span>
+</li>
+<li>
+<a href="/quqi99/article/details/25320181" title="Thinkpad T440p安装Linux的种种问题（by quqi99)">Thinkpad T440p安装Linux的种种问题（by quqi99)</a><span>(14)</span>
+</li>
+<li>
+<a href="/quqi99/article/details/5604732" title="个人户口档案转移笔记（适用北京集体户口）">个人户口档案转移笔记（适用北京集体户口）</a><span>(8)</span>
+</li>
+<li>
+<a href="/quqi99/article/details/1624225" title="Magnolia学习笔记（一个基于JSR170的内容管理系统） ( by quqi99 )">Magnolia学习笔记（一个基于JSR170的内容管理系统） ( by quqi99 )</a><span>(7)</span>
+</li>
+<li>
+<a href="/quqi99/article/details/20476297" title="一种Neutron部署拓扑 (by quqi99)">一种Neutron部署拓扑 (by quqi99)</a><span>(7)</span>
+</li>
+<li>
+<a href="/quqi99/article/details/1624218" title="JSpider学习笔记 ( by quqi99 )">JSpider学习笔记 ( by quqi99 )</a><span>(6)</span>
+</li>
+</ul>
+</div>
+<div id="homepageArticles" class="panel tracking-ad" data-mod="popu_4">
+<ul class="panel_head"><span>推荐文章</span></ul>
+<ul class="panel_body" id="ad_commend"></ul>
+</div>
+<script type="text/javascript">
+ new Ad(12, 'ad_commend');
+</script><div id="newcomments" class="panel">
+<ul class="panel_head"><span>最新评论</span></ul>
+<ul class="panel_body itemlist">
+    <li>
+   
+         <a href="/quqi99/article/details/17144869#comments">Android 4.2系统的手机使用LEAP企业Wifi网络 ( by quqi99 )</a>
+    <p style="margin:0px;"><a href="/huever" class="user_name">huever</a>:
+@quqi99:感觉公司封了  SZ也是这样的情况。
+    </p>
+    </li>
+    <li>
+   
+         <a href="/quqi99/article/details/1724438#comments">选择压缩算法的经历 (by quqi99)</a>
+    <p style="margin:0px;"><a href="/wdzxl198" class="user_name">wdzxl198</a>:
+赞 楼主！ 最近项目中用到压缩和解压！ 发现和作者的情景一模一样，看来这个问题一直存在啊
+    </p>
+    </li>
+    <li>
+   
+         <a href="/quqi99/article/details/17404507#comments">无线路由器TL-WR703刷Linux操作系统DD-WRT小记(by quqi99)</a>
+    <p style="margin:0px;"><a href="/quqi99" class="user_name">quqi99</a>:
+@u013894160: 没了，那个路由器都找不着了
+    </p>
+    </li>
+    <li>
+   
+         <a href="/quqi99/article/details/32939509#comments">比较Swift与HDFS话Ceph本质(by quqi99)</a>
+    <p style="margin:0px;"><a href="/zhare" class="user_name">zhare</a>:
+我觉得Swift和Ceph最大的一个本质不同是在数据一致性设计上的取舍，Swift牺牲强一致性而选择...
+    </p>
+    </li>
+    <li>
+   
+         <a href="/quqi99/article/details/5144798#comments">GlassFish上开发部署JAX-WS WebService应用( by quqi99 )</a>
+    <p style="margin:0px;"><a href="/quqi99" class="user_name">quqi99</a>:
+@shan_ji007:非常抱歉，已经四五年不做中间件和Java了，提供不了了。
+    </p>
+    </li>
+    <li>
+   
+         <a href="/quqi99/article/details/5144798#comments">GlassFish上开发部署JAX-WS WebService应用( by quqi99 )</a>
+    <p style="margin:0px;"><a href="/shan_ji007" class="user_name">shan_ji007</a>:
+大侠，能不能提供一个https方式的例子呢？
+    </p>
+    </li>
+    <li>
+   
+         <a href="/quqi99/article/details/25320181#comments">Thinkpad T440p安装Linux的种种问题（by quqi99)</a>
+    <p style="margin:0px;"><a href="/quqi99" class="user_name">quqi99</a>:
+@yaoyansi:见我文中“20140709更新”那段，我现在也改成使用集成显卡了，Nvidia的...
+    </p>
+    </li>
+    <li>
+   
+         <a href="/quqi99/article/details/25320181#comments">Thinkpad T440p安装Linux的种种问题（by quqi99)</a>
+    <p style="margin:0px;"><a href="/yaoyansi" class="user_name">yaoyansi</a>:
+firefox，gnome-shell, xorg  几个程序加起来占用cpu不到20%。所以，我很...
+    </p>
+    </li>
+    <li>
+   
+         <a href="/quqi99/article/details/25320181#comments">Thinkpad T440p安装Linux的种种问题（by quqi99)</a>
+    <p style="margin:0px;"><a href="/yaoyansi" class="user_name">yaoyansi</a>:
+我的thinkpad t430 装的是CentOS7 ，完了之后发现发热巨大，top之后发现最占cp...
+    </p>
+    </li>
+    <li>
+   
+         <a href="/quqi99/article/details/20476297#comments">一种Neutron部署拓扑 (by quqi99)</a>
+    <p style="margin:0px;"><a href="/quqi99" class="user_name">quqi99</a>:
+@qq_19703459: 当然可以呀，起多个l3-agent，neutron会自动将router调...
+    </p>
+    </li>
+</ul>
+</div>
+    </div>
+    <div class="clear">
+    </div>
+</div>
+
+            <div class="clear">
+            </div>
+        </div>
+        
+
+<script type="text/javascript" src="http://csdnimg.cn/rabbit/cnick/cnick.js"></script>
+<script type="text/javascript" src="http://static.blog.csdn.net/scripts/newblog.min.js"></script>
+
+
+<script type="text/javascript" src="http://medal.blog.csdn.net/showblogmedal.ashx?blogid=212839"></script>
+<script type="text/javascript">
+    document.write('<script type="text/javascript" src="http://csdnimg.cn/pubfooter/js/publib_footer.js?' + Math.floor(new Date() / 120000).toString(36) + '="></' + 'script>');
+</script>
+    <script type="text/javascript" src="http://passport.csdn.net/content/loginbox/login.js"></script>
+<script type="text/javascript">document.write("<img src=http://counter.csdn.net/pv.aspx?id=24 border=0 width=0 height=0>");</script>
+<script type="text/javascript" src="http://www.csdn.net/ui/scripts/Csdn/counter.js"></script>
+<script type="text/javascript" src="http://ad.csdn.net/scripts/ad-blog.js"></script>
+<script type="text/javascript" src="http://zz.csdn.net/js/count.js"></script>
+<script type="text/javascript">
+    $(function () {
+        function __get_code_toolbar(snippet_id) {
+            return $("<a href='https://code.csdn.net/snippets/"
+                    + snippet_id
+                    + "' target='_blank' title='在CODE上查看代码片' style='text-indent:0;'><img src='https://code.csdn.net/assets/CODE_ico.png' width=12 height=12 alt='在CODE上查看代码片' style='position:relative;top:1px;left:2px;'/></a>"
+                    + "<a href='https://code.csdn.net/snippets/"
+                    + snippet_id
+                    + "/fork' target='_blank' title='派生到我的代码片'  style='text-indent:0;'><img src='https://code.csdn.net/assets/ico_fork.svg' width=12 height=12 alt='派生到我的代码片' style='position:relative;top:2px;left:2px;'/></a>");
+        }
+        
+        $("[code_snippet_id]").each(function () {
+            __s_id = $(this).attr("code_snippet_id");
+            if (__s_id != null && __s_id != "" && __s_id != 0 && parseInt(__s_id) > 70020) {
+                __code_tool = __get_code_toolbar(__s_id);
+                $(this).prev().find(".tools").append(__code_tool);
+            }
+        });
+    });
+</script>
+
+    </div>
+      <!--new top-->
+    
+    <script id="csdn-toolbar-id" btnId="header_notice_num" wrapId="note1" count="5" subCount="5" type="text/javascript" src="http://static.csdn.net/public/common/toolbar/js/toolbar.js"></script>     <!--new top-->
+</body>
+</html>
