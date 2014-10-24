@@ -20,10 +20,11 @@ if [ -d "${LOCAL_WORK_HOME}" ] ; then
 
     #export java paths
     if [ -d "${LOCAL_WORK_TOOL_DIR}" ] ; then
-        if [ -z "${LOCAL_JDK_VER}" ] ; then 
-            LOCAL_JDK_VER=1.6
-        fi
         JAVA_HOME=`dirname ${LOCAL_WORK_TOOL_DIR}/java/jdk${LOCAL_JDK_VER}*/bin`
+        if [ -z "${LOCAL_JDK_VER}" ] || [ ! -d "${JAVA_HOME}" ] ; then
+            LOCAL_JDK_VER=1.6
+            JAVA_HOME=`dirname ${LOCAL_WORK_TOOL_DIR}/java/jdk${LOCAL_JDK_VER}*/bin`
+        fi
         if [ -d "${JAVA_HOME}" ] ; then
             export JAVA_HOME
             #echo JAVA_HOME=${JAVA_HOME}
