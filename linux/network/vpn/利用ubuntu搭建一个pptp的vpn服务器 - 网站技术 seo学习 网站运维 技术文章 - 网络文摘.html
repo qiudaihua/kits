@@ -1,0 +1,288 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=7" />
+<title>利用ubuntu搭建一个pptp的vpn服务器 - 网站技术 seo学习 网站运维 技术文章  - 网络文摘</title>
+<meta name="keywords" content="利用,ubuntu,搭建,vpn">
+<meta name="description" content="在 Ubuntu 上搭建 VPN 服务器的方法非常多，比较著名的有 PPTP, L2TP/IPSec 和 OpenVPN。这里介绍一下pptp的安装配置方法。服务器...">
+<link href="http://www.a8z8.com/statics/css/reset.css" rel="stylesheet" type="text/css" />
+<link href="http://www.a8z8.com/statics/css/default_blue.css" rel="stylesheet" type="text/css" />
+<script type="text/javascript" src="http://www.a8z8.com/statics/js/jquery.min.js"></script>
+<script type="text/javascript" src="http://www.a8z8.com/statics/js/jquery.sgallery.js"></script>
+<script type="text/javascript" src="http://www.a8z8.com/statics/js/search_common.js"></script>
+</head>
+<body>
+<!-- <div class="body-top">
+    <div class="content">
+        		<div id="announ">
+                 <ul>
+                                  </ul>
+            </div>
+     	 <script type="text/javascript">
+$(function(){
+	startmarquee('announ',22,1,500,3000);
+})
+</script>
+            <div class="login lh24 blue"><a href="http://www.a8z8.com/index.php?m=content&c=rss&siteid=1" class="rss ib">rss</a><span class="rt"><script type="text/javascript">document.write('<iframe src="http://www.a8z8.com/index.php?m=member&c=index&a=mini&forward='+encodeURIComponent(location.href)+'&siteid=1" allowTransparency="true"  width="500" height="24" frameborder="0" scrolling="no"></iframe>')</script></span></div>
+    </div>
+</div>
+-->
+<div class="header">
+	<div class="logo"><a href="http://www.a8z8.com/"><img src="http://www.a8z8.com/statics/images/v9/logo.png" /></a></div>
+
+<!--    <div class="search">
+    	<div class="tab" id="search">
+																<a href="javascript:;" onclick="setmodel(1, $(this));" style="outline:medium none;" hidefocus="true"  class="on" >文章</a><span> | </span>										<a href="javascript:;" onclick="setmodel(3, $(this));" style="outline:medium none;" hidefocus="true" >图片</a><span> | </span>										<a href="javascript:;" onclick="setmodel(52, $(this));" style="outline:medium none;" hidefocus="true" >专题</a>								</div>
+
+        <div class="bd">
+            <form action="http://www.a8z8.com/index.php" method="get" target="_blank">
+				<input type="hidden" name="m" value="search"/>
+				<input type="hidden" name="c" value="index"/>
+				<input type="hidden" name="a" value="init"/>
+				<input type="hidden" name="typeid" value="1" id="typeid"/>
+				<input type="hidden" name="siteid" value="1" id="siteid"/>
+                <input type="text" class="text" name="q" id="q"/><input type="submit" value="搜 索" class="button" />
+            </form>
+        </div>
+    </div>
+-->
+<div class="search">
+<script type="text/javascript">var sogou_ad_id=93165;var sogou_ad_height=60;var sogou_ad_width=320;</script><script language='JavaScript' type='text/javascript' src='http://images.sohu.com/cs/jsfile/js/l.js'></script>
+</div>
+<!--    <div class="banner"><script language="javascript" src="http://www.a8z8.com/index.php?m=poster&c=index&a=show_poster&id=1"></script></div> -->
+
+    <div class="banner"><script type="text/javascript">
+/*468*60图片，创建于2011-1-4*/
+var cpro_id = "u340517";
+</script>
+<script src="http://cpro.baidustatic.com/cpro/ui/c.js" type="text/javascript"></script></div>
+
+    <div class="bk3"></div>
+    <div class="nav-bar">
+    	<map>
+    	        	<ul class="nav-site">
+			<li><a href="http://www.a8z8.com"><span>首页</span></a></li>
+						<li class="line">|</li>
+			<li><a href="http://www.a8z8.com/html/wangluowenzhai/"><span>杂文</span></a></li>
+						<li class="line">|</li>
+			<li><a href="http://www.a8z8.com/html/tech/"><span>技术</span></a></li>
+						<li class="line">|</li>
+			<li><a href="http://www.a8z8.com/html/pps/"><span>图库</span></a></li>
+						<li class="line">|</li>
+			<li><a href="http://www.a8z8.com/html/comic/"><span>连环画</span></a></li>
+			            </ul>
+        		        </map>
+    </div> 
+	
+	    <div class="subnav">
+					        		<a href="http://www.a8z8.com/index.php?m=video&c=index&a=album">视频专辑</a> <span> | </span>
+    	<a href="http://www.a8z8.com/index.php?m=content&c=search&catid=9">搜索</a>    </div>
+	</div>
+</div>
+<div class="main">
+	<div class="col-left">
+    	<div class="crumbs"><a href="http://www.a8z8.com">首页</a><span> &gt; </span><a href="http://www.a8z8.com/html/tech/">技术</a> >  正文</div>
+        <div id="Article">
+        	<h1>利用ubuntu搭建一个pptp的vpn服务器<br />
+<span>2012-12-30 00:31:42&nbsp;&nbsp;&nbsp;来源：&nbsp;&nbsp;&nbsp;评论：<a href="#comment_iframe" id="comment">0</a> 点击：</span><span id="hits"></span></h1>
+			<div class="summary" >在 Ubuntu 上搭建 VPN 服务器的方法非常多，比较著名的有 PPTP, L2TP/IPSec 和 OpenVPN。这里介绍一下pptp的安装配置方法。服务器...</div>			<div class="content">
+							在 Ubuntu 上搭建 VPN 服务器的方法非常多，比较著名的有 PPTP, L2TP/IPSec 和 OpenVPN。这里介绍一下pptp的安装配置方法。
+<p>服务器环境是单网卡 eth0。<br />
+在 Ubuntu 中建立 pptp server 需要的软件包为 pptpd，用 apt-get 即可安装：<br />
+sudo apt-get pptpd<br />
+安装好后，首先编辑 /etc/pptpd.conf<br />
+sudo vi /etc/pptpd.conf<br />
+去掉文件最末端的 localip 和 remoteip 两个参数的注释，并进行相应修改。这里，localip 是 VPN 连通后服务器的 ip 地址，而 remoteip 则是客户端的可分配 ip 地址。<br />
+localip 10.100.0.1<br />
+remoteip 10.100.0.2-10<br />
+编辑好这个文件后，我们需要编辑 /etc/ppp/pptpd-options 文件，我们只需要改变其中的 ms-dns 选项，为 VPN 客户端指派 DNS 服务器地址：<br />
+ms-dns 202.113.16.10<br />
+ms-dns 208.67.222.222<br />
+修改 /etc/ppp/chap-secrets 文件，这里面存放着 VPN 的用户名和密码，根据你的实际情况填写即可。如文件中注释所示，第一列是用户名，第二列是服务器名（默认写 pptpd 即可，如果在 pptpd-options 文件中更改过的话，注意这里保持一致），第三列是密码，第四列是 IP 限制（不做限制写 * 即可）。<br />
+全部搞定后，我们需要重启 pptpd 服务使新配置生效：<br />
+sudo /etc/init.d/pptpd restart<br />
+找一台 Windows 电脑，新建个 VPN 链接，地址填服务器的 IP（或域名），用户名密码填刚才设置好的，域那项空着（如果你在 pptpd-options 中设置了，这里就保持一致），点连接就可以了。正常情况下您应该能够建立与服务器的 VPN 链接了。<br />
+建立连接之后，您会发现除了可以访问服务器的资源，其余内外和互联网的内容均无法访问。如果需要访问这些内容的话，我们还需要进一步设置：<br />
+首先，开启 ipv4 forward。方法是，修改 /etc/sysctl.conf，找到类似下面的行并取消它们的注释：<br />
+net.ipv4.ip_forward=1<br />
+然后使新配置生效：<br />
+sudo sysctl -p<br />
+有些时候，经过这样设置，客户端机器就可以上网了（我在虚拟机上这样操作后就可以了）。但我在实验室的服务器上这样操作后仍然无法访问网络，这样我们就需要建立一个 NAT。这里我们使用强大的 iptables 来建立 NAT。首先，先安装 iptables：<br />
+sudo apt-get intall iptables<br />
+装好后，我们向 nat 表中加入一条规则：<br />
+sudo iptables -t nat -A POSTROUTING -s 10.100.0.0/24 -o eth0 -j MASQUERADE<br />
+这样操作后，客户端机器应该就可以上网了。<br />
+但是，只是这样，iptables 的规则会在下次重启时被清除，所以我们还需要把它保存下来，方法是使用 iptables-save 命令：<br />
+sudo iptables-save &gt; /etc/iptables-rules<br />
+然后修改 /etc/network/interfaces 文件，找到 eth0 那一节，在对 eth0 的设置最末尾加上下面这句：<br />
+pre-up iptables-restore &lt; /etc/iptables-rules<br />
+这样当网卡 eth0 被加载的时候就会自动载入我们预先用 iptables-save 保存下的配置。<br />
+到此，一个 VPN Server/Gateway 基本就算架设完毕。当然，也许你按照我的方法做了，还是无法成功，那么下面总结一些我碰到的问题和解决方案：<br />
+无法建立 VPN 连接<br />
+安装好 pptpd 并设置后，客户端还是无法建立到服务器的连接。造成的原因可能有以下几种：<br />
+&nbsp;1. 服务器端的防火墙设置：PPTP 服务需要使用 1723(tcp) 端口和 gre 协议，因此请确保您的防火墙设置允许这两者通行。<br />
+&nbsp;2. 如果服务器在路由器后面，请确保路由器上做好相应的设置和端口转发。<br />
+&nbsp;3. 如果服务器在路由器后面，那么请确保你的服务器支持 VPN Passthrough。<br />
+&nbsp;4. 如果客户端在路由器后面，那么客户端所使用的路由器也必须支持 VPN Passthrough。其实市面上稍微好点的路由器都是支持 VPN Passthrough 的，当然也不排除那些最最最便宜的便宜货确实不支持。当然，如果你的路由器可以刷 DD-Wrt 的话就刷上吧，DD-Wrt 是支持的。<br />
+能建立链接，但&ldquo;几乎&rdquo;无法访问互联网<br />
+这里我使用&ldquo;几乎&rdquo;这个词，是因为并不是完全不能访问互联网。症状为，打开 Google 搜索没问题，但其它网站均无法打开；SSH 可用，但 scp 不行；ftp 能握手，但传不了文件。我就遇到了这种情况，仔细 Google 后发现原来是 MTU 的问题，用 ping 探测了一下果然是包过大了。知道问题就好办了，我们可以通过 iptables 来修正这一问题。具体原理就不讲了，需要的自己 Google。这里只说解决方案，在 filter 表中添加下面的规则：<br />
+sudo iptables -A FORWARD -s 10.100.0.0/24 -p tcp -m tcp --tcp-flags SYN,RST SYN<br />
+-j TCPMSS --set-mss 1200<br />
+上面规则中的 1200 可以根据你的实际情况修改，为了保证最好的网络性能，这个值应该不断修改，直至能保证网络正常使用情况下的最大值。<br />
+好了，至此，一台单网卡 pptp-server 就算完成了。</p>
+				<!--内容关联投票-->
+				                
+						</div>
+			<div id="pages" class="text-c"></div>
+            <p style="margin-bottom:10px">
+            <strong>相关热词搜索：</strong><a href="http://www.a8z8.com/index.php?m=content&c=tag&catid=9&tag=%E5%88%A9%E7%94%A8" class="blue">利用</a> 	<a href="http://www.a8z8.com/index.php?m=content&c=tag&catid=9&tag=ubuntu" class="blue">ubuntu</a> 	<a href="http://www.a8z8.com/index.php?m=content&c=tag&catid=9&tag=%E6%90%AD%E5%BB%BA" class="blue">搭建</a> 	<a href="http://www.a8z8.com/index.php?m=content&c=tag&catid=9&tag=vpn" class="blue">vpn</a> 	            </p>
+            <p class="f14">
+                <strong>上一篇：</strong><a href="http://www.a8z8.com/html/2012/tech_1227/171.html">where there is a shell , there is a way !</a><br />
+                <strong>下一篇：</strong><a href="http://www.a8z8.com/html/2013/tech_0101/186.html">href  是什么单词？</a>
+            </p>
+                                        <div class="related">
+                    <h5 class="blue">延伸阅读：</h5>
+                    <ul class="list blue lh24 f14">
+                                                    <li>·<a href="http://www.a8z8.com/html/2012/tech_1216/142.html" target="_blank">网站联盟网址汇总</a><span>(2012-12-16)</span></li>
+                                                    <li>·<a href="http://www.a8z8.com/html/2012/tech_1216/143.html" target="_blank">vpn翻墙软件汇总</a><span>(2012-12-16)</span></li>
+                                                    <li>·<a href="http://www.a8z8.com/html/2012/tech_1217/144.html" target="_blank">如何快速收到google adsense pin码</a><span>(2012-12-17)</span></li>
+                                                    <li>·<a href="http://www.a8z8.com/html/2012/tech_1217/145.html" target="_blank">推广网站的好方法分享</a><span>(2012-12-17)</span></li>
+                                                    <li>·<a href="http://www.a8z8.com/html/2012/tech_1217/146.html" target="_blank">快速被搜索引擎收录的秘密 就是没有秘密</a><span>(2012-12-17)</span></li>
+                                                    <li>·<a href="http://www.a8z8.com/html/2012/tech_1217/150.html" target="_blank">利用find和du命令计算固定类型文件的大小总和</a><span>(2012-12-17)</span></li>
+                                            </ul>
+                </div>
+                                  <div class="bk15"></div>
+            <script type="text/javascript" src="http://www.a8z8.com/index.php?m=mood&c=index&a=init&id=9-179-1"></script>      </div>
+      <div class="Article-Tool">
+          分享到：
+		  <img src="http://v.t.qq.com/share/images/s/weiboicon16.png" style="padding-bottom:3px;" onclick="postToWb();" class="cu" title="分享到腾讯微博"/><script type="text/javascript">
+	function postToWb(){
+		var _t = encodeURI(document.title);
+		var _url = encodeURIComponent(document.location);
+		var _appkey = encodeURI("cba3558104094dbaa4148d8caa436a0b");
+		var _pic = encodeURI('');
+		var _site = '';
+		var _u = 'http://v.t.qq.com/share/share.php?url='+_url+'&appkey='+_appkey+'&site='+_site+'&pic='+_pic+'&title='+_t;
+		window.open( _u,'', 'width=700, height=680, top=0, left=0, toolbar=no, menubar=no, scrollbars=no, location=yes, resizable=no, status=no' );
+	}
+</script>
+          <script type="text/javascript">document.write('<a href="http://v.t.sina.com.cn/share/share.php?url='+encodeURIComponent(location.href)+'&appkey=3172366919&title='+encodeURIComponent('利用ubuntu搭建一个pptp的vpn服务器')+'" title="分享到新浪微博" class="t1" target="_blank">&nbsp;</a>');</script>
+		  <script type="text/javascript">document.write('<a href="http://www.douban.com/recommend/?url='+encodeURIComponent(location.href)+'&title='+encodeURIComponent('利用ubuntu搭建一个pptp的vpn服务器')+'" title="分享到豆瓣" class="t2" target="_blank">&nbsp;</a>');</script>
+		  <script type="text/javascript">document.write('<a href="http://share.renren.com/share/buttonshare.do?link='+encodeURIComponent(location.href)+'&title='+encodeURIComponent('利用ubuntu搭建一个pptp的vpn服务器')+'" title="分享到人人" class="t3" target="_blank">&nbsp;</a>');</script>
+		  <script type="text/javascript">document.write('<a href="http://www.kaixin001.com/repaste/share.php?rtitle='+encodeURIComponent('利用ubuntu搭建一个pptp的vpn服务器')+'&rurl='+encodeURIComponent(location.href)+'&rcontent=" title="分享到开心网" class="t4" target="_blank">&nbsp;</a>');</script>
+		  <script type="text/javascript">document.write('<a href="http://sns.qzone.qq.com/cgi-bin/qzshare/cgi_qzshare_onekey?url='+encodeURIComponent(location.href)+'" title="分享到QQ空间" class="t5" target="_blank">&nbsp;</a>');</script>
+      
+	  <span id='favorite'>
+		<a href="javascript:;" onclick="add_favorite('利用ubuntu搭建一个pptp的vpn服务器');" class="t6">收藏</a>
+	  </span>
+
+	  </div>
+      <div class="bk10"></div>
+        </div>
+    <div class="col-auto">
+        <div class="box">
+            <h5 class="title-2">频道总排行</h5>
+            <ul class="content digg">
+												<li><a href="http://www.a8z8.com/html/2013/tech_0318/244.html" target="_blank" title="centos 6.4 iso 镜像文件下载地址">centos 6.4 iso 镜像文件下载地址</a></li>
+									<li><a href="http://www.a8z8.com/html/2012/tech_1214/133.html" target="_blank" title="http和socket之长连接和短连接区别">http和socket之长连接和短连</a></li>
+									<li><a href="http://www.a8z8.com/html/2012/tech_1117/38.html" target="_blank" title="nfs showmount clnt_create:RPC:Unknown host">nfs showmount clnt_creat</a></li>
+									<li><a href="http://www.a8z8.com/html/2013/tech_0607/308.html" target="_blank" title="linux下查看uuid的3种方法">linux下查看uuid的3种方法</a></li>
+									<li><a href="http://www.a8z8.com/html/2012/tech_1117/47.html" target="_blank" title="linux dns dig 命令详解">linux dns dig 命令详解</a></li>
+									<li><a href="http://www.a8z8.com/html/2013/tech_0613/310.html" target="_blank" title="linux下如何知道一个文件被哪个进程进行读写">linux下如何知道一个文件被</a></li>
+									<li><a href="http://www.a8z8.com/html/2012/tech_1116/23.html" target="_blank" title="linux服务器故障判断 timewait的处理方法">linux服务器故障判断 timew</a></li>
+									<li><a href="http://www.a8z8.com/html/2013/tech_0604/306.html" target="_blank" title="Linux下的双网卡绑定bond0 em1 em2">Linux下的双网卡绑定bond0 em1 em2</a></li>
+									<li><a href="http://www.a8z8.com/html/2012/tech_1113/13.html" target="_blank" title="jira 3.6 下载和安装">jira 3.6 下载和安装</a></li>
+									<li><a href="http://www.a8z8.com/html/2012/tech_1217/153.html" target="_blank" title="利用Dante架设linux的socks5代理服务器">利用Dante架设linux的socks5</a></li>
+							            </ul>
+        </div>
+        <div class="bk10"></div>
+        <div class="box">
+            <h5 class="title-2">频道本月排行</h5>
+            <ul class="content rank">
+											<li><span>116</span><a href="http://www.a8z8.com/html/2012/tech_1117/47.html" style=""  class="title" title="linux dns dig 命令详解">linux dns dig 命令详解</a></li>
+								<li><span>86</span><a href="http://www.a8z8.com/html/2013/tech_0604/306.html" style=""  class="title" title="Linux下的双网卡绑定bond0 em1 em2">Linux下的双网卡绑定bond0 em1 em2</a></li>
+								<li><span>43</span><a href="http://www.a8z8.com/html/2012/tech_1116/23.html" style=""  class="title" title="linux服务器故障判断 timewait的处理方法">linux服务器故障判断 timewait的处理方法</a></li>
+								<li><span>36</span><a href="http://www.a8z8.com/html/2013/tech_0405/261.html" style=""  class="title" title="linux下的screen命令用来后台执行">linux下的screen命令用来后台执行</a></li>
+								<li><span>34</span><a href="http://www.a8z8.com/html/2012/tech_1230/179.html" style=""  class="title" title="利用ubuntu搭建一个pptp的vpn服务器">利用ubuntu搭建一个pptp的vpn服务器</a></li>
+								<li><span>31</span><a href="http://www.a8z8.com/html/2013/tech_0502/279.html" style=""  class="title" title="用tcpdump记录流量并存入文件进行分析">用tcpdump记录流量并存入文件进行分析</a></li>
+								<li><span>29</span><a href="http://www.a8z8.com/html/2013/tech_0405/262.html" style=""  class="title" title="mysql主从延时工具mk-slave-delay的使用">mysql主从延时工具mk-slave-delay的使用</a></li>
+								<li><span>17</span><a href="http://www.a8z8.com/html/2013/tech_0824/336.html" style=""  class="title" title="Discuz! Database Error (2002) notconnect">Discuz! Database Error (2002) notconnect</a></li>
+								<li><span>14</span><a href="http://www.a8z8.com/html/2014/tech_0531/365.html" style=""  class="title" title="磁盘测试工具fio安装使用指南">磁盘测试工具fio安装使用指南</a></li>
+								<li><span>12</span><a href="http://www.a8z8.com/html/2013/tech_1017/354.html" style=""  class="title" title="linux 下改变网卡工作模式几种方法">linux 下改变网卡工作模式几种方法</a></li>
+							            </ul>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+<!--
+	function show_ajax(obj) {
+		var keywords = $(obj).text();
+		var offset = $(obj).offset();
+		var jsonitem = '';
+		$.getJSON("http://www.a8z8.com/index.php?m=content&c=index&a=json_list&type=keyword&modelid=1&id=179&keywords="+encodeURIComponent(keywords),
+				function(data){
+				var j = 1;
+				var string = "<div class='point key-float'><div style='position:relative'><div class='arro'></div>";
+				string += "<a href='JavaScript:;' onclick='$(this).parent().parent().remove();' hidefocus='true' class='close'><span>关闭</span></a><div class='contents f12'>";
+				if(data!=0) {
+				  $.each(data, function(i,item){
+					j = i+1;
+					jsonitem += "<a href='"+item.url+"' target='_blank'>"+j+"、"+item.title+"</a><BR>";
+					
+				  });
+					string += jsonitem;
+				} else {
+					string += '没有找到相关的信息！';
+				}
+					string += "</div><span class='o1'></span><span class='o2'></span><span class='o3'></span><span class='o4'></span></div></div>";		
+					$(obj).after(string);
+					$('.key-float').mouseover(
+						function (){
+							$(this).siblings().css({"z-index":0})
+							$(this).css({"z-index":1001});
+						}
+					)
+					$(obj).next().css({ "left": +offset.left-100, "top": +offset.top+$(obj).height()+12});
+				});
+	}
+
+	function add_favorite(title) {
+		$.getJSON('http://www.a8z8.com/api.php?op=add_favorite&title='+encodeURIComponent(title)+'&url='+encodeURIComponent(location.href)+'&'+Math.random()+'&callback=?', function(data){
+			if(data.status==1)	{
+				$("#favorite").html('收藏成功');
+			} else {
+				alert('请登录');
+			}
+		});
+	}
+
+$(function(){
+  $('#Article .content img').LoadImage(true, 660, 660,'http://www.a8z8.com/statics/images/s_nopic.gif');    
+})
+//-->
+</script>
+
+<script language="JavaScript" src="http://www.a8z8.com/api.php?op=count&id=179&modelid=1"></script>
+<div class="footer">
+<p class="info">
+<a href="http://www.miitbeian.gov.cn" target="_blank">京ICP备11047313号-1</a> |  
+<a href="http://www.a8z8.com/html/about/aboutus/" target="_blank">关于我们</a> |  
+<a href="http://www.a8z8.com/html/about/contactus/" target="_blank">联系方式</a> |  
+<a href="http://www.a8z8.com/html/about/copyright/" target="_blank">版权信息</a> |  
+<a href="http://www.a8z8.com/index.php?m=link" target="_blank">友情链接</a>
+<br />
+Powered by <strong><a href="http://www.a8z8.com" target="_blank">A8Z8</a></strong> 2009 <img src="http://www.a8z8.com/statics/images/copyright.gif"/><script src='http://pw.cnzz.com/c.php?id=81388734&l=2' language='JavaScript' charset='gb2312'></script></p>
+</div>
+<script type="text/javascript">
+$(function(){
+	$(".picbig").each(function(i){
+		var cur = $(this).find('.img-wrap').eq(0);
+		var w = cur.width();
+		var h = cur.height();
+	   $(this).find('.img-wrap img').LoadImage(true, w, h,'http://www.a8z8.com/statics/images/msg_img/loading.gif');
+	});
+})
+</script>
+</body>
+</html>
