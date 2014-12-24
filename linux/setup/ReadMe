@@ -11,6 +11,16 @@ source ~/.profile
 
 
 FOR ALL BASH USER
-sudo cp ./daiq_hook.sh /etc/bash_completion.d/daiq_hook.sh
-sudo reboot
+sudo cp ./profile_hook.sh /etc/profile.d/profile_hook.sh
+#sudo reboot
 
+#sudo cp ./startup_hook.sh /etc/rc5.d/S10startup_hook.sh
+#sudo reboot
+sudo vim /etc/rc.local
+#add
+DAIQ_WORK_HOME=/work
+if [ -x "${DAIQ_WORK_HOME}/kits/linux/setup/startup.sh" ] ; then
+    . ${DAIQ_WORK_HOME}/kits/linux/setup/startup.sh
+fi
+
+running queue: startup.sh -> profile.sh
