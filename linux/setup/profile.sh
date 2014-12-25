@@ -36,6 +36,19 @@ if [ -d "${DAIQ_WORK_HOME}" ] ; then
         fi
     fi
 
+    # export android home
+    LOCAL_ANDROID_HOME=${LOCAL_WORK_HOME}/android/adt-bundle/sdk
+    if [ -d "${LOCAL_ANDROID_HOME}" ]; then
+        export ANDROID_HOME=${LOCAL_ANDROID_HOME}
+        LOCAL_LINUX_BIN=${LOCAL_LINUX_BIN}:${ANDROID_HOME}/tools
+    fi
+
+    # export ant home
+    if [ -d "${LOCAL_WORK_HOME}/tool/apache-ant/bin" ]; then
+        export ANT_HOME=${LOCAL_WORK_HOME}/tool/apache-ant
+        LOCAL_LINUX_BIN=${LOCAL_LINUX_BIN}:${ANT_HOME}/bin
+    fi
+
     #export linux bin paths
     export PATH=${DAIQ_LINUX_BIN}:${PATH}
     #echo PATH=${PATH}s

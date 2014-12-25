@@ -1,0 +1,2 @@
+tar zcvf test.tar.gz test/ --exclude=test/out/
+split -b 1G --numeric-suffixes test.tar.gz test.tar.gz.
