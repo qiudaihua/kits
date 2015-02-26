@@ -2,8 +2,9 @@
 
 #echo profile_hook >> ${DAIQ_WORK_HOME}/debug.log
 
-#echo DAIQ_WORK_HOME=${DAIQ_WORK_HOME}
-#echo DAIQ_JDK_VERE=${DAIQ_JDK_VER}
+#echo DAIQ_WORK_HOME=${DAIQ_WORK_HOME} >> ${DAIQ_WORK_HOME}/debug.log
+#echo DAIQ_JDK_VER=${DAIQ_JDK_VER} >> ${DAIQ_WORK_HOME}/debug.log
+
 DAIQ_WORK_HOME=${DAIQ_WORK_HOME}
 DAIQ_JDK_VER=${DAIQ_JDK_VER}
 
@@ -22,6 +23,8 @@ if [ -d "${DAIQ_WORK_HOME}" ] ; then
 
     #export java paths
     if [ -d "${DAIQ_WORK_TOOL_DIR}" ] ; then
+        export JAVA6_HOME=`dirname ${DAIQ_WORK_TOOL_DIR}/java/jdk1.6*/bin`
+        export JAVA7_HOME=/usr/lib/jvm/java-7-openjdk-amd64
         JAVA_HOME=`dirname ${DAIQ_WORK_TOOL_DIR}/java/jdk${DAIQ_JDK_VER}*/bin`
         if [ -z "${DAIQ_JDK_VER}" ] || [ ! -d "${JAVA_HOME}" ] ; then
             DAIQ_JDK_VER=1.6
@@ -30,6 +33,7 @@ if [ -d "${DAIQ_WORK_HOME}" ] ; then
         if [ -d "${JAVA_HOME}" ] ; then
             export JAVA_HOME
             #echo JAVA_HOME=${JAVA_HOME}
+            export JRE_HOME=${JAVA_HOME}/jre
             export CLASSPATH=.:${JAVA_HOME}/lib/dt.jar:${JAVA_HOME}/lib/tools.jar
             #echo CLASSPATH=${CLASSPATH}
             DAIQ_LINUX_BIN=${JAVA_HOME}/bin:${DAIQ_LINUX_BIN}
@@ -37,16 +41,16 @@ if [ -d "${DAIQ_WORK_HOME}" ] ; then
     fi
 
     # export android home
-    LOCAL_ANDROID_HOME=${LOCAL_WORK_HOME}/android/adt-bundle/sdk
-    if [ -d "${LOCAL_ANDROID_HOME}" ]; then
-        export ANDROID_HOME=${LOCAL_ANDROID_HOME}
-        LOCAL_LINUX_BIN=${LOCAL_LINUX_BIN}:${ANDROID_HOME}/tools
+    DAIQ_ANDROID_HOME=${DAIQ_WORK_HOME}/android/adt-bundle/sdk
+    if [ -d "${DAIQ_ANDROID_HOME}" ]; then
+        export ANDROID_HOME=${DAIQ_ANDROID_HOME}
+        DAIQ_LINUX_BIN=${DAIQ_LINUX_BIN}:${ANDROID_HOME}/tools
     fi
 
     # export ant home
-    if [ -d "${LOCAL_WORK_HOME}/tool/apache-ant/bin" ]; then
-        export ANT_HOME=${LOCAL_WORK_HOME}/tool/apache-ant
-        LOCAL_LINUX_BIN=${LOCAL_LINUX_BIN}:${ANT_HOME}/bin
+    if [ -d "${DAIQ_WORK_HOME}/tool/apache-ant/bin" ]; then
+        export ANT_HOME=${DAIQ_WORK_HOME}/tool/apache-ant
+        DAIQ_LINUX_BIN=${DAIQ_LINUX_BIN}:${ANT_HOME}/bin
     fi
 
     #export linux bin paths

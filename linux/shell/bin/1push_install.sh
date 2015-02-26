@@ -79,6 +79,6 @@ push_install(){
     fi
 }
 
-push_install $*
+push_install ${*}
 
 

@@ -26,7 +26,26 @@ delete_dalvik_cache(){
     fi
 }
 
+delete_dalvik_cache_(){
+    local APK_NAME=$1
+    #echo APK_NAME=${APK_NAME}
+    local CACHE_PATH="/data/dalvik-cache"
+    ext=${1##*.}
+    name=${1%.*}
+    source 0echo_color.sh -b "delete_dalvik_cache_: $1"
+    if [ "$1" == "framework-res.apk" ];then
+        adb shell rm /system/framework/$1
+    elif [ "$ext" == "jar" ];then
+        adb shell rm /system/framework/$name.odex /system/framework/
+        adb shell rm /data/dalvik-cache/system@framework@$name.jar@classes.dex
+    elif [ "$ext" == "apk" ];then
+        adb shell rm /data/dalvik-cache/system@app@$name.apk@classes.dex
+        adb shell rm /system/app/$name.odex
+        adb shell rm /system/priv-app/$name.odex
+    fi
+}
 
 source 1ensure_root_rw.sh
-delete_dalvik_cache $*
+
+delete_dalvik_cache_ $1
 

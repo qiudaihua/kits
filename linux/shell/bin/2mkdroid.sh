@@ -112,7 +112,7 @@ if [ "${IS_PUSH}" == "auto" ] || [ "${IS_PUSH}" == "true" ]; then
 fi
 
 if [ ${IS_KILL_SYSTEM} == true ]; then
-    source 1kill.sh
+    source 1kill.sh "system_"
 elif [ ${IS_REBOOT} == true ]; then
     adb reboot
 fi
