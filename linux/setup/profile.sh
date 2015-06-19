@@ -55,7 +55,7 @@ if [ -d "${DAIQ_WORK_HOME}" ] ; then
 
     #export linux bin paths
     export PATH=${DAIQ_LINUX_BIN}:${PATH}
-    #echo PATH=${PATH}s
+    #echo PATH=${PATH}
     #java -version
 
 fi
