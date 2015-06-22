@@ -35,5 +35,6 @@ SUBSYSTEM=="usb", ATTR{idVendor}=="18d1", ATTR{idProduct}=="4ee0", MODE="0666", 
 
 #GT-I9100 Phone [Galaxy S II], GT-I9300 Phone [Galaxy S III], GT-P7500 [Galaxy Tab 10.1]
 SUBSYSTEM=="usb", ATTR{idVendor}=="04e8", ATTR{idProduct}=="6860", MODE="0666", OWNER="daiq"
+SUBSYSTEM=="usb", ATTR{idVendor}=="2717", ATTR{idProduct}=="904e", MODE="0666", OWNER="daiq"
 
 
