@@ -1,0 +1,81 @@
+﻿右键“我的电脑” -> "属性" 
+
+在打开的属性面板里选择“高级系统设置”
+
+在打开的高级系统设置对话框中选择“高级”标签 -> “环境变量”
+
+环境变量->系统变量
+
+注意环境变量不能出现“\sdk”字样
+
+java:
+新建JAVA_HOME输入E:\windows\work\java\jdk1.8.0_25
+编辑Path添加%JAVA_HOME%\bin;%JAVA_HOME%\jre\bin;
+新建JRE_HOME输入E:\windows\work\tool\java\jre1.8.0_25
+新建CLASSPATH输入.;%JAVA_HOME%\lib;%JAVA_HOME%\lib\tools.jar
+
+测试cmd java -version
+
+
+
+android:
+
+新建ANDROID_HOME输入E:\windows\work\tool\android\android-sdk
+编辑Path添加%ANDROID_HOME%\tools;%ANDROID_HOME%\platform-tools;
+
+新建NDK_HOME输入%ANDROID_HOME%/ndk-bundle
+
+编辑Path添加%NDK_HOME%;
+
+
+测试cmd android
+
+ant:
+
+新建ANT_HOME输入E:\windows\work\tool\ant\apache-ant-1.10.1
+编辑Path添;%ANT_HOME%\bin
+测试cmd ant -version
+
+
+gradle:
+
+新建GRADLE_HOME输入E:\windows\work\tool\gradle\gradle-4.1
+编辑Path添;%GRADLE_HOME%\bin
+新建GRADLE_USER_HOME=E:\windows\work\tool\gradle\repo
+测试cmd gradle -v
+
+maven:
+新建MAVEN_HOME输入E:\windows\work\tool\maven\apache-maven-3.5.0
+编辑Path添;%MAVEN_HOME%\bin
+测试cmd mvn -v
+
+
+cocos
+
+新建COCOS_CONSOLE_ROOT输入F:/tool/local/cocos2d/cocos2d-x/tools/cocos2d-console/bin
+
+
+
+export PATH=$COCOS_CONSOLE_ROOT:$PATH
+
+
+# Add environment variable COCOS_X_ROOT for cocos2d-x
+export COCOS_X_ROOT=/tool/local/cocos2d
+export PATH=$COCOS_X_ROOT:$PATH
+
+# Add environment variable COCOS_TEMPLATES_ROOT for cocos2d-x
+export COCOS_TEMPLATES_ROOT=/tool/local/cocos2d/cocos2d-x/templates
+export PATH=$COCOS_TEMPLATES_ROOT:$PATH
+
+# Add environment variable NDK_ROOT for cocos2d-x
+export NDK_ROOT=/tool/local/android/sdk/android-sdk-linux/ndk-bundle
+#export PATH=$NDK_ROOT:$PATH
+
+# Add environment variable ANDROID_SDK_ROOT for cocos2d-x
+export ANDROID_SDK_ROOT=/tool/local/android/sdk/android-sdk-linux
+#export PATH=$ANDROID_SDK_ROOT:$PATH
+#export PATH=$ANDROID_SDK_ROOT/tools:$ANDROID_SDK_ROOT/platform-tools:$PATH
+
+# Add environment variable ANT_ROOT for cocos2d-x
+export ANT_ROOT=/tool/local/apache-ant/bin
+#export PATH=$ANT_ROOT:$PATH
